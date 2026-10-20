@@ -1,0 +1,3 @@
+  1.0 (2026-10-20)   첫 공개 판.
+                     MSX1 · MSX2 · MSX2+ · turbo R 시스템 ROM, XPY ROM, 디스크 ROM,
+                     openMSX · blueMSX 기계 구성, 예제 디스크.

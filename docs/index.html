@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MSX 를 위한 새 시스템 ROM. 전원을 켜면 BASIC 대신 파이썬(XPY)이 뜹니다.">
+<title>XBIOS 1.0</title>
+<style>
+:root{--bg:#f7f7f4;--fg:#1d1d1b;--mut:#6c6c66;--line:#e2e2da;--card:#fff;--soft:#efefea;--acc:#6d3fd6;--accbg:#f2ecff;--blue:#2563eb;--grn:#15803d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141518;--fg:#e9e9e5;--mut:#9b9b95;--line:#2b2d33;--card:#1c1e23;--soft:#22242a;--acc:#b69cff;--accbg:#272040;--blue:#7aa8ff;--grn:#4ade80}}
+:root[data-theme="dark"]{--bg:#141518;--fg:#e9e9e5;--mut:#9b9b95;--line:#2b2d33;--card:#1c1e23;--soft:#22242a;--acc:#b69cff;--accbg:#272040;--blue:#7aa8ff;--grn:#4ade80}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16.5px/1.7 system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+main{max-width:980px;margin:0 auto;padding:40px 16px 72px}
+a{color:var(--acc)}
+h1{font-size:34px;line-height:1.25;margin:0 0 10px;letter-spacing:-.01em}
+.lead{font-size:18px;color:var(--mut);margin:0 0 22px}
+.lead b{color:var(--acc)}
+h2{font-size:22px;margin:56px 0 14px}
+h3{font-size:17px;margin:0 0 4px}
+p{margin:0 0 12px}
+code{font:14px ui-monospace,Consolas,monospace;background:var(--soft);padding:1px 6px;border-radius:5px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px}
+.btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);text-decoration:none;font-weight:600}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.boots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 6px}
+.pix{width:100%;height:auto;image-rendering:pixelated;border-radius:10px;border:1px solid var(--line);display:block;background:#000}
+.cap{font-size:13.5px;color:var(--mut);margin:6px 0 0}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.f p{color:var(--mut);font-size:15px;margin:0}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.ex .hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;margin:0 0 10px}
+.ex .hd h3{font-size:19px;margin:0}
+.tag{font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--accbg);color:var(--acc)}
+.ex .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0 0}
+.ex p{color:var(--mut);font-size:15px}
+.term{background:#0f1117;color:#dbe3ff;border-radius:12px;padding:16px 18px;font:14.5px/1.6 ui-monospace,Consolas,monospace;white-space:pre;overflow-x:auto}
+.term .p{color:#b69cff}.term .d{color:#8590aa}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{background:var(--soft);color:var(--mut);font-size:13.5px;font-weight:600}
+.scroll{overflow-x:auto}
+ul{padding-left:20px;margin:0}
+li{margin:6px 0}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+@media (max-width:640px){h1{font-size:27px}.boots{grid-template-columns:1fr 1fr}.boots figure:last-child{grid-column:span 2}h2{margin-top:44px}}
+</style>
+</head>
+<body>
+<main>
+
+<h1>XBIOS 1.0</h1>
+<p class="lead">MSX1 · MSX2 · MSX2+ · turbo R 용 시스템 ROM 입니다. 전원을 켜면 BASIC 대신 <b>파이썬(XPY)</b>이 나옵니다.</p>
+<div class="btns">
+  <a class="btn primary" href="install.html">설치하고 실행하기</a>
+  <a class="btn" href="https://github.com/bearslee77-collab/xbios/releases/tag/v1.0">내려받기 (v1.0)</a>
+  <a class="btn" href="compare.html">기존 BIOS 와 비교</a>
+  <a class="btn" href="xpy.html">XPY 명령어</a>
+</div>
+
+<div class="boots">
+  <figure style="margin:0"><img class="pix" src="img/boot_msx1.png" alt="MSX1 에서 XPY 프롬프트"><figcaption class="cap">MSX1</figcaption></figure>
+  <figure style="margin:0"><img class="pix" src="img/boot_msx2.png" alt="MSX2 에서 XPY 프롬프트"><figcaption class="cap">MSX2</figcaption></figure>
+  <figure style="margin:0"><img class="pix" src="img/boot_tr.png" alt="turbo R 에서 XPY 프롬프트"><figcaption class="cap">turbo R</figcaption></figure>
+</div>
+
+
+<h2>무엇이 다른가요</h2>
+<div class="feat">
+  <div class="f"><h3>BASIC 대신 파이썬</h3><p>함수 · 리스트 · 딕셔너리 · 예외 · 실수를 지원합니다. 같은 게임이 MSX BASIC 보다 2배 이상 빠릅니다.</p></div>
+  <div class="f"><h3>디스크에서 프로그램을</h3><p><code>fs.load("XMAZE.PY")</code> 로 디스크의 프로그램을 실행하고, <code>:save</code> · <code>:load</code> 로 직접 쓴 프로그램을 저장합니다.</p></div>
+  <div class="f"><h3>한글 화면</h3><p>MSX2 이후 기종에서 SCREEN 9 한글과 두벌식 입력을 지원합니다. 한글 출력이 원래 BIOS 보다 몇 배 빠릅니다.</p></div>
+  <div class="f"><h3>turbo R 의 R800</h3><p>3D 좌표 변환, 회전·확대, 레이캐스트 기능이 있습니다. 3D 변환은 Z80 보다 14.6배 빠릅니다.</p></div>
+</div>
+
+<h2>예제 프로그램</h2>
+<p><code>dist/examples.dsk</code> 의 프로그램입니다. <code>_XPY_DISK</code> 기계에 디스크를 넣고 <code>fs.load("이름.PY")</code> 로 실행합니다.</p>
+
+<div class="ex">
+  <div class="hd"><h3>XWAVE</h3><span class="tag">turbo R</span><code>fs.load("XWAVE.PY")</code></div>
+  <p>플라스마 · 노을 · 장미 곡선 그래픽 데모입니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/xwave_2run.png" alt="XWAVE 플라스마">
+    <img class="pix" src="img/xwave_4run.png" alt="XWAVE 다음 장면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>MZEBI</h3><span class="tag">MSX2</span><code>fs.load("MZEBI.PY")</code></div>
+  <p>세로 스크롤 슈팅입니다. 아무 키나 누르면 시작합니다. 트리거는 공중 공격, M 은 지상 폭격입니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/mzebi_1title.png" alt="MZEBI 제목 화면">
+    <img class="pix" src="img/mzebi_2play.png" alt="MZEBI 실행 화면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XMAZE</h3><span class="tag">turbo R</span><code>fs.load("XMAZE.PY")</code></div>
+  <p>1인칭 3D 미로입니다. B 를 누르면 자동 시연 후 Z80 과 R800 의 시간을 비교해 보여 줍니다(575 대 107 프레임).</p>
+  <div class="shots">
+    <img class="pix" src="img/xmaze_1title.png" alt="XMAZE 제목 화면">
+    <img class="pix" src="img/xmaze_2demo.png" alt="XMAZE 미로 화면">
+    <img class="pix" src="img/xmaze_3demo.png" alt="XMAZE 결과 화면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XROTO</h3><span class="tag">turbo R</span><code>fs.load("XROTO.PY")</code></div>
+  <p>회전·확대 데모입니다. 리턴 키를 누르면 무늬가 두 겹이 됩니다.</p>
+  <div class="shots"><img class="pix" src="img/xroto_2run.png" alt="XROTO 실행 화면"></div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XPOLY</h3><span class="tag">turbo R</span><code>fs.load("XPOLY.PY")</code></div>
+  <p>삼각형 · 사각형 · 큐브를 회전합니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/xpoly_3run.png" alt="XPOLY 큐브">
+    <img class="pix" src="img/xpoly_4run.png" alt="XPOLY 터널">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>BALLS · MANDEL · LIFE</h3><span class="tag">MSX2 이후</span><code>fs.load("BALLS.PY")</code></div>
+  <p>공 32개 · 만델브로 집합 · 라이프 게임입니다. <code>examples/*.BAS</code> 에 같은 알고리즘의 MSX BASIC 판이 있습니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/balls_2.png" alt="BALLS 실행 화면">
+    <img class="pix" src="img/mandel_2.png" alt="MANDEL 실행 화면">
+    <img class="pix" src="img/life_2.png" alt="LIFE 실행 화면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XSHOT</h3><span class="tag">turbo R</span><code>fs.load("XSHOT.PY")</code></div>
+  <p>가로 스크롤 슈팅입니다.</p>
+  <div class="shots"><img class="pix" src="img/xshot_2run.png" alt="XSHOT 실행 화면"></div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XROAD</h3><span class="tag">MSX1</span><code>fs.load("XROAD.PY")</code></div>
+  <p>마주 오는 차를 피하는 게임입니다. 스페이스는 시작, B 는 자동 시연입니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/xroad_1title.png" alt="XROAD 제목 화면">
+    <img class="pix" src="img/xroad_2demo.png" alt="XROAD 실행 화면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>XCLAIM</h3><span class="tag">MSX2</span><code>fs.load("XCLAIM.PY")</code></div>
+  <p>선을 그어 땅을 차지하는 게임입니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/xclaim_1title.png" alt="XCLAIM 제목 화면">
+    <img class="pix" src="img/xclaim_3demo.png" alt="XCLAIM 실행 화면">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>SUNGJUK</h3><span class="tag">MSX2</span><code>fs.load("SUNGJUK.PY")</code></div>
+  <p>SCREEN 9 한글 화면의 성적처리 프로그램입니다. 1980년대 고등학교 성적일람표 형식으로 총점, 평균, 석차, 평어(수·우·미·양·가)를 냅니다. 키를 누르면 학생별 성적통지표가 나옵니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/sungjuk_1.png" alt="SUNGJUK 성적일람표">
+    <img class="pix" src="img/sungjuk_2.png" alt="SUNGJUK 성적통지표">
+  </div>
+</div>
+
+<div class="ex">
+  <div class="hd"><h3>SHEET</h3><span class="tag">MSX2</span><code>fs.load("SHEET.PY")</code></div>
+  <p>SCREEN 9 한글 화면의 계산표입니다. 셀에 숫자, 글자, 수식(<code>=B2*C2</code>, <code>=SUM(D2:D6)</code>)을 넣으면 바로 다시 계산합니다. 방향키로 이동하고 RETURN 으로 입력, DEL 로 지웁니다.</p>
+  <div class="shots">
+    <img class="pix" src="img/sheet_1.png" alt="SHEET 처음 화면">
+    <img class="pix" src="img/sheet_2.png" alt="SHEET 값을 바꾼 화면">
+  </div>
+</div>
+
+<h2>직접 써 보기</h2>
+<p>블록은 빈 줄로 끝납니다.</p>
+<div class="term"><span class="d"> XPY version 1.0
+ Python
+ 8749 Bytes free
+ Ready</span>
+<span class="p">&gt;&gt;&gt;</span> screen.mode(5)
+<span class="p">&gt;&gt;&gt;</span> for i in range(40):
+<span class="p">...</span>     screen.circle(128, 106, i*2+4, i%15+1)
+<span class="p">...</span>
+</div>
+<p class="cap">모듈: <code>screen</code> · <code>sprite</code> · <code>key</code>/<code>joy</code> · <code>sound</code> · <code>fs</code> · <code>time</code> · <code>math</code> · <code>random</code> · <code>turbo</code> 등. 함수 목록은 <a href="https://github.com/bearslee77-collab/xbios/blob/main/md/XPYAPI.md">md/XPYAPI.md</a>.</p>
+
+<h2>배포판에 든 것</h2>
+<div class="scroll"><table>
+<tr><th>경로</th><th>무엇</th></tr>
+<tr><td><code>dist/openmsx/</code></td><td>openMSX 용 기계 구성 열둘(세대마다 XBIOS만 · XPY · XPY+디스크)과 ROM</td></tr>
+<tr><td><code>dist/bluemsx/</code></td><td>blueMSX 용 기계 구성(MSX1 · MSX2 · MSX2+, XPY 와 디스크 드라이브 포함)</td></tr>
+<tr><td><code>dist/examples.dsk</code></td><td>위 예제 프로그램이 든 디스크</td></tr>
+<tr><td><code>dist/xbios_1.rom</code></td><td>실기 MSX1 용 32KB ROM</td></tr>
+<tr><td><code>dist/xbios_2*.rom</code> · <code>xbios_tr*.rom</code></td><td>MSX2 · MSX2+ · turbo R 의 본체 ROM 과 SUB-ROM</td></tr>
+<tr><td><code>dist/xpy/</code> · <code>dist/xdisk/</code></td><td>XPY ROM(128KB) · 디스크 인터페이스 ROM</td></tr>
+<tr><td><code>demo/pydemo.rom</code></td><td>디스크 없이 꽂기만 하면 되는 XPY 데모 카트리지(MSX2 이후)</td></tr>
+<tr><td><code>examples/</code></td><td>예제의 파이썬 소스와 비교용 MSX BASIC 판</td></tr>
+</table></div>
+
+<h2>알아 두실 점</h2>
+<ul>
+<li>MSX2 이후는 에뮬레이터에서만 시험했습니다.</li>
+<li>XPY 는 RAM 64KB 가 필요합니다. 디스크 기능은 XDISK 가 있는 구성에서 동작합니다.</li>
+</ul>
+
+<footer>XBIOS 1.0 · © 2026 GHOST · CC BY-NC-ND 4.0</footer>
+</main>
+</body>
+</html>

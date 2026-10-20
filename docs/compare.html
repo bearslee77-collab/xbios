@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XBIOS 1.0 차이점</title>
+<style>
+:root{--bg:#f7f7f4;--fg:#1d1d1b;--mut:#6c6c66;--line:#e2e2da;--card:#fff;--soft:#efefea;--acc:#6d3fd6;--accbg:#f2ecff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141518;--fg:#e9e9e5;--mut:#9b9b95;--line:#2b2d33;--card:#1c1e23;--soft:#22242a;--acc:#b69cff;--accbg:#272040}}
+:root[data-theme="dark"]{--bg:#141518;--fg:#e9e9e5;--mut:#9b9b95;--line:#2b2d33;--card:#1c1e23;--soft:#22242a;--acc:#b69cff;--accbg:#272040}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.7 system-ui,"Segoe UI","Malgun Gothic",sans-serif}
+main{max-width:860px;margin:0 auto;padding:48px 16px 80px}
+h1{font-size:32px;line-height:1.3;margin:0 0 10px;letter-spacing:-.01em}
+.lead{color:var(--mut);margin:0 0 40px;font-size:18px}
+.lead b{color:var(--acc)}
+h2{font-size:21px;margin:64px 0 18px}
+
+/* key differences */
+.diff{display:grid;gap:12px}
+.d{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.d .n{font-size:22px;font-weight:800;color:var(--acc)}
+.d h3{margin:0;font-size:18px}
+.d p{margin:2px 0 0;color:var(--mut);font-size:15px}
+.d .v{text-align:right;font-size:22px;font-weight:800;white-space:nowrap}
+.d .v small{display:block;font-size:12px;font-weight:400;color:var(--mut)}
+.d.main{background:var(--accbg);border:2px solid var(--acc)}
+.d.main .v{color:var(--acc)}
+
+/* compact table */
+table{width:100%;border-collapse:collapse;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-size:14px;color:var(--mut);font-weight:600;background:var(--soft)}
+td:first-child{color:var(--mut);font-size:14px;white-space:nowrap}
+td:nth-child(2),td:nth-child(3){color:var(--mut)}
+th:last-child,td:last-child{background:var(--accbg);font-weight:700}
+th:last-child{color:var(--acc)}
+.scroll{overflow-x:auto}
+
+/* xpy */
+.term{background:#0f1117;color:#dbe3ff;border-radius:12px;padding:18px 20px;font:15px/1.6 Consolas,"Courier New",monospace;white-space:pre;overflow-x:auto}
+.term .p{color:#b69cff}.term .d{color:#8590aa}
+.bar{margin:22px 0 0}
+.bar .r{display:grid;grid-template-columns:110px 1fr 60px;gap:12px;align-items:center;margin:10px 0;font-size:14.5px}
+.bar .r>span:first-child{color:var(--mut)}
+.bar .t{display:flex;flex-direction:column;gap:4px}
+.bar b{height:20px;border-radius:4px;font-size:12px;line-height:20px;padding-left:8px;color:#fff;white-space:nowrap}
+.bar .x0{background:#a3a39b}.bar .x1{background:var(--acc)}
+.bar .m{font-weight:800;color:var(--acc);text-align:right}
+.cap{font-size:13.5px;color:var(--mut);margin:8px 0 0}
+
+figure{margin:0}
+figure img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+
+ul.lim{padding-left:20px;margin:0;color:var(--mut)}
+ul.lim li{margin:8px 0}
+ul.lim b{color:var(--fg);font-weight:600}
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+
+@media (max-width:640px){
+  body{font-size:16px}h1{font-size:26px}
+  .d{grid-template-columns:30px 1fr;padding:14px}
+  .d .v{grid-column:2;text-align:left;font-size:18px}
+  th,td{padding:10px 8px;font-size:13.5px}
+  .bar .r{grid-template-columns:76px 1fr 50px}
+}
+:root{--blue:#2563eb;--bluebg:#e8f0ff;--red:#c2410c;--grn:#15803d;--grnbg:#e6f6ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--blue:#7aa8ff;--bluebg:#1d2a44;--red:#ff8a5c;--grn:#4ade80;--grnbg:#16301f}}
+:root[data-theme="dark"]{--blue:#7aa8ff;--bluebg:#1d2a44;--red:#ff8a5c;--grn:#4ade80;--grnbg:#16301f}
+.map{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.map svg{width:100%;height:auto;display:block}
+.map text{font-family:system-ui,"Segoe UI","Malgun Gothic",sans-serif;fill:var(--fg)}
+.map .mu{fill:var(--mut)}.map .w{fill:#fff}
+</style>
+</head>
+<body>
+<main>
+<p style="font-size:14px;margin:0 0 18px"><a href="index.html">처음으로</a> · <a href="compare-mobile.html">휴대폰용으로 보기</a></p>
+
+<h1>XBIOS 1.0<br>기존 MSX BIOS 와 무엇이 다른가</h1>
+<p class="lead">가장 큰 차이는 <b>BASIC 대신 파이썬</b>이 들어 있다는 점입니다.</p>
+
+<h2>한 장으로 보면</h2>
+<div class="map"><svg viewBox="0 0 860 494" role="img" aria-label="기존 MSX 의 ROM 구성과 XBIOS 의 ROM 구성 비교">
+<text x="170" y="34" text-anchor="middle" font-size="17" font-weight="800">기존 MSX</text>
+<text x="690" y="34" text-anchor="middle" font-size="17" font-weight="800" style="fill:var(--blue)">XBIOS</text>
+<rect x="20" y="60" width="300" height="74" rx="10" fill="var(--soft)" stroke="var(--line)" stroke-width="1"/>
+<text x="34" y="80" font-size="11.5" class="mu">본체 ROM 앞 16KB</text>
+<text x="34" y="103" font-size="16" font-weight="700">BIOS</text>
+<text x="34" y="122" font-size="12.5" class="mu">입출력 진입점</text>
+<rect x="540" y="60" width="300" height="74" rx="10" fill="var(--bluebg)" stroke="var(--blue)" stroke-width="2"/>
+<text x="554" y="80" font-size="11.5" class="mu">본체 ROM 앞 16KB</text>
+<text x="554" y="103" font-size="16" font-weight="700">XBIOS</text>
+<text x="554" y="122" font-size="12.5" class="mu">입출력 진입점</text>
+<path d="M322 97 H 528" stroke="var(--blue)" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 91 l8 6 -8 6" stroke="var(--blue)" stroke-width="2" fill="none"/><rect x="365" y="82" width="120" height="30" rx="15" fill="var(--blue)"/><text x="425" y="102" text-anchor="middle" font-size="13.5" font-weight="700" class="w">교체</text>
+<rect x="20" y="146" width="300" height="74" rx="10" fill="var(--soft)" stroke="var(--acc)" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="34" y="166" font-size="11.5" class="mu">본체 ROM 뒤 16KB</text>
+<text x="34" y="189" font-size="16" font-weight="700">MSX BASIC</text>
+<text x="34" y="208" font-size="12.5" class="mu">BASIC 인터프리터</text>
+<rect x="540" y="146" width="300" height="74" rx="10" fill="var(--bluebg)" stroke="var(--blue)" stroke-width="2"/>
+<text x="554" y="166" font-size="11.5" class="mu">본체 ROM 뒤 16KB</text>
+<text x="554" y="189" font-size="16" font-weight="700">MSX BASIC → XPY (파이썬)</text>
+<text x="554" y="208" font-size="12.5" class="mu">켜면 &gt;&gt;&gt; 프롬프트</text>
+<path d="M322 183 H 528" stroke="var(--acc)" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 177 l8 6 -8 6" stroke="var(--acc)" stroke-width="2" fill="none"/><rect x="365" y="168" width="120" height="30" rx="15" fill="var(--acc)"/><text x="425" y="188" text-anchor="middle" font-size="13.5" font-weight="700" class="w">XPY 로 대체</text>
+<rect x="20" y="232" width="300" height="74" rx="10" fill="var(--soft)" stroke="var(--line)" stroke-width="1"/>
+<text x="34" y="252" font-size="11.5" class="mu">SUB-ROM 16KB (MSX2 이후)</text>
+<text x="34" y="275" font-size="16" font-weight="700">BIOS · BASIC 확장</text>
+<text x="34" y="294" font-size="12.5" class="mu">그래픽 · 팔레트 · 시계</text>
+<rect x="540" y="232" width="300" height="74" rx="10" fill="var(--bluebg)" stroke="var(--blue)" stroke-width="2"/>
+<text x="554" y="252" font-size="11.5" class="mu">SUB-ROM 16KB (MSX2 이후)</text>
+<text x="554" y="275" font-size="16" font-weight="700">XBIOS SUB-ROM</text>
+<text x="554" y="294" font-size="12.5" class="mu">SCREEN 5–8 · 팔레트 · 시계 · 레이캐스트</text>
+<path d="M322 269 H 528" stroke="var(--blue)" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 263 l8 6 -8 6" stroke="var(--blue)" stroke-width="2" fill="none"/><rect x="365" y="254" width="120" height="30" rx="15" fill="var(--blue)"/><text x="425" y="274" text-anchor="middle" font-size="13.5" font-weight="700" class="w">교체</text>
+<rect x="20" y="318" width="300" height="74" rx="10" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="6 5"/>
+<text x="34" y="338" font-size="11.5" class="mu">빈 슬롯</text>
+<text x="34" y="361" font-size="16" font-weight="700">(비어 있음)</text>
+<rect x="540" y="318" width="300" height="74" rx="10" fill="var(--acc)" stroke="var(--acc)" stroke-width="2"/>
+<text x="554" y="338" font-size="11.5" class="w" opacity=".85">빈 슬롯</text>
+<text x="554" y="361" font-size="16" font-weight="700" class="w">XPY 128KB</text>
+<text x="554" y="380" font-size="12.5" class="w" opacity=".85">BASIC 을 대신하는 파이썬, 켜면 &gt;&gt;&gt;</text>
+<path d="M322 355 H 528" stroke="var(--acc)" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 349 l8 6 -8 6" stroke="var(--acc)" stroke-width="2" fill="none"/><rect x="365" y="340" width="120" height="30" rx="15" fill="var(--acc)"/><text x="425" y="360" text-anchor="middle" font-size="13.5" font-weight="700" class="w">신규</text>
+<rect x="20" y="404" width="300" height="74" rx="10" fill="var(--soft)" stroke="var(--line)" stroke-width="1"/>
+<text x="34" y="424" font-size="11.5" class="mu">한글 SCREEN 9</text>
+<text x="34" y="447" font-size="16" font-weight="700">한국 기종 전용</text>
+<text x="34" y="466" font-size="12.5" class="mu">해당 기종의 SUB-ROM 에 있음</text>
+<rect x="540" y="404" width="300" height="74" rx="10" fill="var(--grnbg)" stroke="var(--grn)" stroke-width="2"/>
+<text x="554" y="424" font-size="11.5" class="mu">한글 SCREEN 9</text>
+<text x="554" y="447" font-size="16" font-weight="700" style="fill:var(--grn)">SCREEN 9 한글 — 몇 배 빠르게</text>
+<text x="554" y="466" font-size="12.5" class="mu">한국 기종이 아니어도</text>
+<path d="M322 441 H 528" stroke="var(--grn)" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 435 l8 6 -8 6" stroke="var(--grn)" stroke-width="2" fill="none"/><rect x="365" y="426" width="120" height="30" rx="15" fill="var(--grn)"/><text x="425" y="446" text-anchor="middle" font-size="13.5" font-weight="800" style="fill:#0b2e17">속도 개선</text>
+</svg></div>
+<p class="cap">회색은 원래 제조사 코드, 파란색은 XBIOS 로 바꾼 것, 보라색은 MSX BASIC 을 대신한 파이썬(XPY), 초록색은 한글 SCREEN 9 입니다.</p>
+
+<h2>다섯 가지 차이</h2>
+<div class="diff">
+  <div class="d main"><span class="n">1</span><div><h3>BASIC 대신 파이썬 (XPY)</h3><p>켜면 Ok 대신 &gt;&gt;&gt; 가 뜹니다.</p></div><div class="v">2.3배<small>BASIC 대비 속도</small></div></div>
+  <div class="d"><span class="n">2</span><div><h3>어느 기종에서나 한글</h3><p>한국 기종이 아니어도 SCREEN 9 한글과 두벌식 입력이 됩니다.</p></div><div class="v">몇 배<small>한글 출력 속도</small></div></div>
+  <div class="d"><span class="n">3</span><div><h3>기존 코드 없음</h3><p>기존 BIOS 의 코드를 쓰지 않았습니다.</p></div><div class="v">CC<small>BY-NC-ND 4.0</small></div></div>
+  <div class="d"><span class="n">4</span><div><h3>네 세대를 한 소스에서</h3><p>MSX1 · MSX2 · MSX2+ · turbo R 을 같은 코드에서 만듭니다.</p></div><div class="v">4세대</div></div>
+  <div class="d"><span class="n">5</span><div><h3>기존에 없던 기능</h3><p>FM 음원 진입점, VDP 로 그리는 원·상자·칠하기, turbo R 의 R800 전용 연산.</p></div><div class="v">14.6배<small>R800 3D 변환</small></div></div>
+</div>
+
+<h2>나란히 보면</h2>
+<div class="scroll"><table>
+<tr><th></th><th>기존 MSX BIOS</th><th>C-BIOS</th><th>XBIOS</th></tr>
+<tr><td>켜면</td><td>MSX BASIC</td><td>축소판 BASIC</td><td>파이썬 (XPY)</td></tr>
+<tr><td>라이선스</td><td>재배포 불가</td><td>BSD</td><td>CC BY-NC-ND 4.0</td></tr>
+<tr><td>세대</td><td>기종마다 하나</td><td>MSX1 ~ MSX2+</td><td>MSX1 ~ turbo R</td></tr>
+<tr><td>한글</td><td>한국 기종 전용</td><td>없음</td><td>모든 MSX2 이후</td></tr>
+</table></div>
+
+<h2>XPY — 켜면 바로 파이썬</h2>
+<div class="term"><span class="d"> XPY version 1.0
+ Python
+ 8749 Bytes free
+ Ready</span>
+<span class="p">&gt;&gt;&gt;</span> for i in range(3):
+<span class="p">...</span>     print(i, i * i)
+0 0
+1 1
+2 4
+<span class="p">&gt;&gt;&gt;</span> <span class="d">▌</span></div>
+<div class="bar">
+  <div class="r"><span>XDODGE</span><div class="t"><b class="x0" style="width:100%">BASIC 682</b><b class="x1" style="width:44.4%">XPY 303</b></div><span class="m">2.25배</span></div>
+  <div class="r"><span>XCLAIM</span><div class="t"><b class="x0" style="width:78.2%">BASIC 533</b><b class="x1" style="width:33.3%">XPY 227</b></div><span class="m">2.35배</span></div>
+</div>
+<p class="cap">같은 게임을 원래 MSX BASIC 과 XPY 로 돌려 걸린 프레임 수. 짧을수록 빠르고, 계산 결과(체크섬)는 양쪽이 같습니다.</p>
+
+<h2>한글 — 같은 글을 몇 배 빨리</h2>
+<figure><img src="img/s9race.gif" alt="같은 한글 630바이트: 왼쪽 대우 CPC-300 원래 BIOS, 오른쪽 XBIOS2 와 XPY"></figure>
+<p class="cap">같은 한글 630바이트. 왼쪽 대우 CPC-300 원래 BIOS, 오른쪽 XBIOS + XPY (openMSX).</p>
+
+<h2>아직 안 되는 것</h2>
+<ul class="lim">
+<li>MSX2 이후는 에뮬레이터에서만 시험했습니다.</li>
+<li>XPY 는 RAM 64KB 가 필요합니다.</li>
+</ul>
+
+<footer>XBIOS 1.0 · © 2026 GHOST · CC BY-NC-ND 4.0</footer>
+</main>
+</body>
+</html>

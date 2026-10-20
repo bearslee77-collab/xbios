@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 494" width="860" height="494">
+<style>text{font-family:system-ui,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;fill:#1d1d1b}.mu{fill:#6c6c66}.w{fill:#fff}</style>
+<rect width="860" height="494" fill="#ffffff"/>
+<text x="170" y="34" text-anchor="middle" font-size="17" font-weight="800">기존 MSX</text>
+<text x="690" y="34" text-anchor="middle" font-size="17" font-weight="800" style="fill:#2563eb">XBIOS</text>
+<rect x="20" y="60" width="300" height="74" rx="10" fill="#efefea" stroke="#e2e2da" stroke-width="1"/>
+<text x="34" y="80" font-size="11.5" class="mu">본체 ROM 앞 16KB</text>
+<text x="34" y="103" font-size="16" font-weight="700">BIOS</text>
+<text x="34" y="122" font-size="12.5" class="mu">입출력 진입점</text>
+<rect x="540" y="60" width="300" height="74" rx="10" fill="#e8f0ff" stroke="#2563eb" stroke-width="2"/>
+<text x="554" y="80" font-size="11.5" class="mu">본체 ROM 앞 16KB</text>
+<text x="554" y="103" font-size="16" font-weight="700">XBIOS</text>
+<text x="554" y="122" font-size="12.5" class="mu">입출력 진입점</text>
+<path d="M322 97 H 528" stroke="#2563eb" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 91 l8 6 -8 6" stroke="#2563eb" stroke-width="2" fill="none"/><rect x="365" y="82" width="120" height="30" rx="15" fill="#2563eb"/><text x="425" y="102" text-anchor="middle" font-size="13.5" font-weight="700" class="w">교체</text>
+<rect x="20" y="146" width="300" height="74" rx="10" fill="#efefea" stroke="#6d3fd6" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="34" y="166" font-size="11.5" class="mu">본체 ROM 뒤 16KB</text>
+<text x="34" y="189" font-size="16" font-weight="700">MSX BASIC</text>
+<text x="34" y="208" font-size="12.5" class="mu">BASIC 인터프리터</text>
+<rect x="540" y="146" width="300" height="74" rx="10" fill="#e8f0ff" stroke="#2563eb" stroke-width="2"/>
+<text x="554" y="166" font-size="11.5" class="mu">본체 ROM 뒤 16KB</text>
+<text x="554" y="189" font-size="16" font-weight="700">MSX BASIC → XPY (파이썬)</text>
+<text x="554" y="208" font-size="12.5" class="mu">켜면 &gt;&gt;&gt; 프롬프트</text>
+<path d="M322 183 H 528" stroke="#6d3fd6" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 177 l8 6 -8 6" stroke="#6d3fd6" stroke-width="2" fill="none"/><rect x="365" y="168" width="120" height="30" rx="15" fill="#6d3fd6"/><text x="425" y="188" text-anchor="middle" font-size="13.5" font-weight="700" class="w">XPY 로 대체</text>
+<rect x="20" y="232" width="300" height="74" rx="10" fill="#efefea" stroke="#e2e2da" stroke-width="1"/>
+<text x="34" y="252" font-size="11.5" class="mu">SUB-ROM 16KB (MSX2 이후)</text>
+<text x="34" y="275" font-size="16" font-weight="700">BIOS · BASIC 확장</text>
+<text x="34" y="294" font-size="12.5" class="mu">그래픽 · 팔레트 · 시계</text>
+<rect x="540" y="232" width="300" height="74" rx="10" fill="#e8f0ff" stroke="#2563eb" stroke-width="2"/>
+<text x="554" y="252" font-size="11.5" class="mu">SUB-ROM 16KB (MSX2 이후)</text>
+<text x="554" y="275" font-size="16" font-weight="700">XBIOS SUB-ROM</text>
+<text x="554" y="294" font-size="12.5" class="mu">SCREEN 5–8 · 팔레트 · 시계 · 레이캐스트</text>
+<path d="M322 269 H 528" stroke="#2563eb" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 263 l8 6 -8 6" stroke="#2563eb" stroke-width="2" fill="none"/><rect x="365" y="254" width="120" height="30" rx="15" fill="#2563eb"/><text x="425" y="274" text-anchor="middle" font-size="13.5" font-weight="700" class="w">교체</text>
+<rect x="20" y="318" width="300" height="74" rx="10" fill="none" stroke="#e2e2da" stroke-width="1" stroke-dasharray="6 5"/>
+<text x="34" y="338" font-size="11.5" class="mu">빈 슬롯</text>
+<text x="34" y="361" font-size="16" font-weight="700">(비어 있음)</text>
+<rect x="540" y="318" width="300" height="74" rx="10" fill="#6d3fd6" stroke="#6d3fd6" stroke-width="2"/>
+<text x="554" y="338" font-size="11.5" class="w" opacity=".85">빈 슬롯</text>
+<text x="554" y="361" font-size="16" font-weight="700" class="w">XPY 128KB</text>
+<text x="554" y="380" font-size="12.5" class="w" opacity=".85">BASIC 을 대신하는 파이썬, 켜면 &gt;&gt;&gt;</text>
+<path d="M322 355 H 528" stroke="#6d3fd6" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 349 l8 6 -8 6" stroke="#6d3fd6" stroke-width="2" fill="none"/><rect x="365" y="340" width="120" height="30" rx="15" fill="#6d3fd6"/><text x="425" y="360" text-anchor="middle" font-size="13.5" font-weight="700" class="w">신규</text>
+<rect x="20" y="404" width="300" height="74" rx="10" fill="#efefea" stroke="#e2e2da" stroke-width="1"/>
+<text x="34" y="424" font-size="11.5" class="mu">한글 SCREEN 9</text>
+<text x="34" y="447" font-size="16" font-weight="700">한국 기종 전용</text>
+<text x="34" y="466" font-size="12.5" class="mu">해당 기종의 SUB-ROM 에 있음</text>
+<rect x="540" y="404" width="300" height="74" rx="10" fill="#e6f6ea" stroke="#15803d" stroke-width="2"/>
+<text x="554" y="424" font-size="11.5" class="mu">한글 SCREEN 9</text>
+<text x="554" y="447" font-size="16" font-weight="700" style="fill:#15803d">SCREEN 9 한글 — 몇 배 빠르게</text>
+<text x="554" y="466" font-size="12.5" class="mu">한국 기종이 아니어도</text>
+<path d="M322 441 H 528" stroke="#15803d" stroke-width="2" stroke-dasharray="2 4"/><path d="M520 435 l8 6 -8 6" stroke="#15803d" stroke-width="2" fill="none"/><rect x="365" y="426" width="120" height="30" rx="15" fill="#15803d"/><text x="425" y="446" text-anchor="middle" font-size="13.5" font-weight="800" style="fill:#0b2e17">속도 개선</text>
+</svg>

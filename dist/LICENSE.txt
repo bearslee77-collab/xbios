@@ -1,0 +1,7 @@
+XBIOS
+Copyright (c) 2026 GHOST
+
+ROM images, example programs and documents: CC BY-NC-ND 4.0
+https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+MSX is a trademark of MSX Licensing Corporation.

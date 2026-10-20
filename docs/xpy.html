@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XPY 명령어</title>
+<style>
+:root{color-scheme:light}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#000;font:16px/1.75 "Batang","바탕","Nanum Myeongjo","AppleMyungjo",serif;word-break:keep-all;overflow-wrap:anywhere}
+.page{max-width:860px;margin:0 auto;padding:28px 16px 64px}
+h1,h2,h3,.nm,.kd,th,.toc,.cover small{font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif}
+code,pre,.sig{font-family:"D2Coding",Consolas,"Courier New",monospace}
+a{color:#000}
+.cover{border:3px solid #000;padding:28px 20px;margin:0 0 28px;text-align:center}
+.cover h1{font-size:34px;margin:0 0 6px;letter-spacing:4px}
+.cover p{margin:0}
+.cover small{display:block;margin-top:14px;font-size:13px}
+.toc{border-top:2px solid #000;border-bottom:2px solid #000;padding:10px 0;margin:0 0 36px;font-size:15px}
+.toc b{display:block;margin-bottom:6px;letter-spacing:6px}
+.toc a{display:flex;text-decoration:none;padding:1px 0}
+h2{display:flex;align-items:center;gap:12px;font-size:22px;margin:44px 0 14px;padding-bottom:6px;border-bottom:3px double #000}
+h2 .no{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;background:#000;color:#fff;font-size:20px}
+h3{font-size:17px;margin:28px 0 10px;padding-left:8px;border-left:6px solid #000}
+.ent{border:1.5px solid #000;margin:0 0 14px;break-inside:avoid;page-break-inside:avoid}
+.eh{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#000;color:#fff;padding:4px 10px}
+.nm{font-weight:700;font-size:17px;font-family:"D2Coding",Consolas,monospace}
+.kd{font-size:12px;border:1px solid #fff;padding:0 6px;white-space:nowrap}
+.ef{width:100%;border-collapse:collapse}
+.ef th{width:76px;text-align:left;vertical-align:top;font-weight:700;font-size:14px;padding:6px 0 6px 10px;white-space:nowrap}
+.ef td{padding:6px 10px 6px 4px;vertical-align:top}
+.ef tr+tr th,.ef tr+tr td{border-top:1px dashed #000}
+.sig{font-weight:700}
+pre{margin:0;white-space:pre-wrap;font-size:14px;line-height:1.55}
+.ex{border:1px solid #000;padding:8px 10px;margin:10px 0}
+.ex b{font-family:"Malgun Gothic",sans-serif;font-size:14px}
+.tw{overflow-x:auto;margin:0 0 12px}
+table.plain{border-collapse:collapse;width:100%;font-size:15px}
+table.plain th,table.plain td{border:1px solid #000;padding:5px 8px;text-align:left;vertical-align:top}
+table.plain th{background:#eee}
+.note{margin:8px 0 12px}
+.note:before{content:"※ ";font-weight:700}
+ul{padding-left:22px}
+footer{margin-top:48px;border-top:2px solid #000;padding-top:8px;text-align:center;font-size:13px;font-family:"Malgun Gothic",sans-serif}
+@media (max-width:520px){.ef th{width:60px;font-size:13px}.cover h1{font-size:26px}}
+@media print{.page{max-width:none}h2{break-before:page}}
+</style></head>
+<body><div class="page">
+<p><a href="index.html">처음으로</a></p>
+<div class="cover"><h1>XPY 명령어 해설</h1><p>XBIOS 1.0 · XPY version 1.0</p>
+<small>형 · 내장 함수 · 모듈별 함수</small></div>
+<div class="toc"><b>차 례</b><a href="#c1"><span>1. 사용 방법</span></a><a href="#c2"><span>2. 지원하는 형과 문법</span></a><a href="#c3"><span>3. 내장 함수</span></a><a href="#c4"><span>4. screen: 화면과 그리기</span></a><a href="#c5"><span>5. sprite</span></a><a href="#c6"><span>6. sound</span></a><a href="#c7"><span>7. key, joy, pad</span></a><a href="#c8"><span>8. mem: 메모리, I/O, BIOS</span></a><a href="#c9"><span>9. fs: 디스크</span></a><a href="#c10"><span>10. time</span></a><a href="#c11"><span>11. turbo: turbo R 전용</span></a><a href="#c12"><span>12. sys</span></a><a href="#c13"><span>13. random</span></a><a href="#c14"><span>14. math</span></a><a href="#c15"><span>15. 확장 칩 모듈</span></a></div>
+<p class="note">이 문서는 XPY에서 쓸 수 있는 형, 내장 함수, 모듈과 함수를 정리한 참고서입니다.</p>
+<h2 id="c1"><span class="no">1</span>사용 방법</h2>
+<ul>
+<li>모듈은 모두 내장되어 있어서 <code>import</code> 없이 이름으로 바로 씁니다. 예: <code>screen.pset(10, 20)</code></li>
+<li>좌표는 항상 왼쪽 위가 (0, 0)입니다.</li>
+<li>인수를 생략할 수 있는 자리의 기본값은 <code>None</code>이며, 현재 설정을 그대로 쓴다는 뜻입니다. <code>screen.color(0)</code>은 전경색을 검정으로 바꾸고, <code>screen.color(None)</code>은 바꾸지 않습니다.</li>
+<li>범위를 벗어난 인수는 <code>ValueError</code>, 형이 맞지 않으면 <code>TypeError</code>, 그 기계에서 지원하지 않는 기능은 <code>NotImplementedError</code>, 디스크 오류는 <code>OSError</code>, 메모리 부족은 <code>MemoryError</code>가 발생합니다. Ctrl-STOP은 <code>KeyboardInterrupt</code>가 됩니다.</li>
+<li>세대 표기는 MSX1, MSX2, MSX2+, turbo R 입니다. 표기가 없는 함수는 모든 세대에서 동작합니다.</li>
+<li>일부 이름은 실행 환경에 따라 들어 있지 않을 수 있습니다. 해당 항목에 따로 적었습니다.</li>
+</ul>
+<h2 id="c2"><span class="no">2</span>지원하는 형과 문법</h2>
+<h3>형</h3>
+<div class="tw"><table class="plain"><tr><th>형</th><th>설명</th></tr>
+<tr><td><code>int</code></td><td>부호 있는 32비트 정수 (−2147483648 ~ 2147483647)</td></tr>
+<tr><td><code>float</code></td><td>단정도(32비트) 실수. 유효 숫자는 약 7자리입니다</td></tr>
+<tr><td><code>bool</code></td><td><code>True</code>, <code>False</code></td></tr>
+<tr><td><code>str</code></td><td>바이트열입니다. 유니코드가 아니므로 <code>len(&quot;가&quot;)</code>는 2입니다</td></tr>
+<tr><td><code>None</code></td><td>값 없음</td></tr>
+<tr><td><code>list</code></td><td>가변 배열</td></tr>
+<tr><td><code>dict</code></td><td>사전 (넣은 순서를 유지합니다)</td></tr>
+</table></div>
+<p class="note">튜플과 <code>bytes</code> 형은 없습니다. 여러 값을 돌려주는 함수는 리스트를 돌려줍니다. VRAM이나 메모리에서 읽은 바이트열은 <code>str</code>로 돌려줍니다.</p>
+<h3>문장과 연산자</h3>
+<ul>
+<li>문장: <code>if/elif/else</code>, <code>while</code>, <code>for/in</code>, <code>break</code>, <code>continue</code>, <code>pass</code>, <code>def</code>, <code>return</code>, <code>global</code>, <code>try/except/finally</code>, <code>raise</code>, <code>del</code>, <code>assert</code></li>
+<li>연산자: <code>+ - * / // % ** &lt;&lt; &gt;&gt; &amp; | ^ ~</code>, 비교 <code>== != &lt; &lt;= &gt; &gt;=</code>, 논리 <code>and or not</code>, <code>in</code>, <code>not in</code></li>
+<li><code>a, b = b, a</code> 같은 두 값의 교환 대입을 쓸 수 있습니다.</li>
+<li><code>/</code> 는 실수 나눗셈, <code>//</code> 는 정수 나눗셈입니다. 0으로 나누면 <code>ZeroDivisionError</code>가 발생합니다.</li>
+<li><code>class</code>, <code>yield</code>, <code>with</code>, <code>lambda</code>, <code>import</code>, 데코레이터는 지원하지 않습니다.</li>
+<li>f-문자열은 <code>{식}</code>과 <code>{식:서식}</code> 형태를 지원합니다. <code>!r</code>, <code>=</code>, 서식 안의 <code>{}</code> 중첩은 지원하지 않습니다. f-문자열과 <code>format()</code>이 들어 있지 않은 환경에서는 <code>NotImplementedError</code>가 발생합니다.</li>
+</ul>
+<h2 id="c3"><span class="no">3</span>내장 함수</h2>
+<div class="ent" id="f-print">
+<div class="eh"><span class="nm">print</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">print(*args, sep=&quot; &quot;, end=&quot;\n&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>화면에 출력합니다. <code>sep</code>, <code>end</code>가 없는 환경도 있습니다</td></tr>
+<tr><th>【보기】</th><td><pre>print(&quot;HELLO&quot;, 1 + 2)
+print(&quot;A&quot;, &quot;B&quot;, sep=&quot;-&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-input">input</a> · <a href="#f-len">len</a></td></tr>
+</table></div>
+<div class="ent" id="f-input">
+<div class="eh"><span class="nm">input</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">input(prompt=&quot;&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>한 줄을 입력받아 <code>str</code>로 돌려줍니다</td></tr>
+<tr><th>【보기】</th><td><pre>name = input(&quot;NAME? &quot;)
+print(&quot;HELLO &quot; + name)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-print">print</a> · <a href="#f-len">len</a> · <a href="#f-range">range</a></td></tr>
+</table></div>
+<div class="ent" id="f-len">
+<div class="eh"><span class="nm">len</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">len(x)</span></td></tr>
+<tr><th>【기능】</th><td><code>str</code>, <code>list</code>, <code>dict</code>의 길이</td></tr>
+<tr><th>【보기】</th><td><pre>print(len(&quot;ABC&quot;))      # 3
+print(len([1, 2]))     # 2</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-print">print</a> · <a href="#f-input">input</a> · <a href="#f-range">range</a> · <a href="#f-int">int</a></td></tr>
+</table></div>
+<div class="ent" id="f-range">
+<div class="eh"><span class="nm">range</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">range(stop)</span><br><span class="sig">range(start, stop[, step])</span></td></tr>
+<tr><th>【기능】</th><td><code>for</code> 문에서 쓰는 정수 범위</td></tr>
+<tr><th>【보기】</th><td><pre>for i in range(1, 6):
+    print(i)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-input">input</a> · <a href="#f-len">len</a> · <a href="#f-int">int</a> · <a href="#f-float">float</a></td></tr>
+</table></div>
+<div class="ent" id="f-int">
+<div class="eh"><span class="nm">int</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">int(x)</span><br><span class="sig">int(s, base)</span></td></tr>
+<tr><th>【기능】</th><td>정수로 바꿉니다. <code>base</code>는 2~36이고 <code>s</code>는 문자열이어야 합니다</td></tr>
+<tr><th>【보기】</th><td><pre>print(int(&quot;42&quot;) + 1)
+print(int(&quot;FF&quot;, 16))   # 255</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-len">len</a> · <a href="#f-range">range</a> · <a href="#f-float">float</a> · <a href="#f-str">str</a></td></tr>
+</table></div>
+<div class="ent" id="f-float">
+<div class="eh"><span class="nm">float</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">float(x)</span></td></tr>
+<tr><th>【기능】</th><td>실수로 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-range">range</a> · <a href="#f-int">int</a> · <a href="#f-str">str</a> · <a href="#f-bool">bool</a></td></tr>
+</table></div>
+<div class="ent" id="f-str">
+<div class="eh"><span class="nm">str</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">str(x)</span></td></tr>
+<tr><th>【기능】</th><td>문자열로 바꿉니다</td></tr>
+<tr><th>【보기】</th><td><pre>print(&quot;SCORE &quot; + str(120))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-int">int</a> · <a href="#f-float">float</a> · <a href="#f-bool">bool</a> · <a href="#f-list">list</a></td></tr>
+</table></div>
+<div class="ent" id="f-bool">
+<div class="eh"><span class="nm">bool</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">bool(x)</span></td></tr>
+<tr><th>【기능】</th><td>참/거짓으로 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-float">float</a> · <a href="#f-str">str</a> · <a href="#f-list">list</a> · <a href="#f-chr">chr</a></td></tr>
+</table></div>
+<div class="ent" id="f-list">
+<div class="eh"><span class="nm">list</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">list(x)</span></td></tr>
+<tr><th>【기능】</th><td>리스트로 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-str">str</a> · <a href="#f-bool">bool</a> · <a href="#f-chr">chr</a> · <a href="#f-abs">abs</a></td></tr>
+</table></div>
+<div class="ent" id="f-chr">
+<div class="eh"><span class="nm">chr · ord</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">chr(n)</span><br><span class="sig">ord(s)</span></td></tr>
+<tr><th>【기능】</th><td>바이트값과 글자 사이를 변환합니다</td></tr>
+<tr><th>【보기】</th><td><pre>print(chr(65), ord(&quot;A&quot;))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-bool">bool</a> · <a href="#f-list">list</a> · <a href="#f-abs">abs</a> · <a href="#f-min">min</a></td></tr>
+</table></div>
+<div class="ent" id="f-abs">
+<div class="eh"><span class="nm">abs</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">abs(n)</span></td></tr>
+<tr><th>【기능】</th><td>절댓값</td></tr>
+<tr><th>【참고】</th><td><a href="#f-list">list</a> · <a href="#f-chr">chr</a> · <a href="#f-min">min</a> · <a href="#f-sum">sum</a></td></tr>
+</table></div>
+<div class="ent" id="f-min">
+<div class="eh"><span class="nm">min · max</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">min(...)</span><br><span class="sig">max(...)</span></td></tr>
+<tr><th>【기능】</th><td>최솟값 / 최댓값. 인수 여러 개 또는 리스트 하나</td></tr>
+<tr><th>【참고】</th><td><a href="#f-chr">chr</a> · <a href="#f-abs">abs</a> · <a href="#f-sum">sum</a> · <a href="#f-hex">hex</a></td></tr>
+</table></div>
+<div class="ent" id="f-sum">
+<div class="eh"><span class="nm">sum</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sum(list)</span></td></tr>
+<tr><th>【기능】</th><td>합계</td></tr>
+<tr><th>【보기】</th><td><pre>print(sum([10, 20, 30]))   # 60</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-abs">abs</a> · <a href="#f-min">min</a> · <a href="#f-hex">hex</a> · <a href="#f-sorted">sorted</a></td></tr>
+</table></div>
+<div class="ent" id="f-hex">
+<div class="eh"><span class="nm">hex · bin</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">hex(n)</span><br><span class="sig">bin(n)</span></td></tr>
+<tr><th>【기능】</th><td><code>&quot;0x1f&quot;</code>, <code>&quot;0b11111&quot;</code> 형태의 문자열</td></tr>
+<tr><th>【참고】</th><td><a href="#f-min">min</a> · <a href="#f-sum">sum</a> · <a href="#f-sorted">sorted</a> · <a href="#f-format">format</a></td></tr>
+</table></div>
+<div class="ent" id="f-sorted">
+<div class="eh"><span class="nm">sorted</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sorted(list)</span></td></tr>
+<tr><th>【기능】</th><td>정렬된 새 리스트</td></tr>
+<tr><th>【보기】</th><td><pre>print(sorted([3, 1, 2]))   # [1, 2, 3]</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sum">sum</a> · <a href="#f-hex">hex</a> · <a href="#f-format">format</a> · <a href="#f-exit">exit</a></td></tr>
+</table></div>
+<div class="ent" id="f-format">
+<div class="eh"><span class="nm">format</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">format(값)</span><br><span class="sig">format(값, 서식)</span></td></tr>
+<tr><th>【기능】</th><td>서식에 맞춘 문자열</td></tr>
+<tr><th>【보기】</th><td><pre>print(format(3.14159, &quot;.2f&quot;))   # 3.14</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-hex">hex</a> · <a href="#f-sorted">sorted</a> · <a href="#f-exit">exit</a></td></tr>
+</table></div>
+<div class="ent" id="f-exit">
+<div class="eh"><span class="nm">exit</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">exit()</span></td></tr>
+<tr><th>【기능】</th><td>프로그램을 끝내고 열린 파일을 닫습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sorted">sorted</a> · <a href="#f-format">format</a></td></tr>
+</table></div>
+<h3>format 서식</h3>
+<p class="note"><code>[[채움]정렬][부호][0][너비][.자리수][형]</code> 형태입니다.</p>
+<ul>
+<li>정렬: <code>&lt;</code>, <code>&gt;</code>, <code>^</code>, <code>=</code> (<code>=</code>는 수에만 씁니다)</li>
+<li>부호: <code>+</code>, <code>-</code>, 빈칸 (문자열에는 쓸 수 없습니다)</li>
+<li>형: <code>d</code>, <code>s</code>, <code>f</code> 또는 생략. <code>f</code>의 기본 소수 자리는 6이고 반올림은 0.5에서 짝수 쪽으로 합니다.</li>
+<li><code>x</code>, <code>o</code>, <code>e</code>, <code>g</code>, <code>%</code>와 천 단위 구분은 지원하지 않으며 <code>ValueError</code>가 발생합니다.</li>
+</ul>
+<div class="ex"><b>【보기】</b><pre>print(f&quot;SCORE{s:5}  HI-SC{h:5}&quot;)
+print(format(3.14159, &quot;.2f&quot;))     # 3.14</pre></div>
+<h3>문자열 메서드</h3>
+<div class="ent" id="f-s.find">
+<div class="eh"><span class="nm">s.find</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">s.find(t)</span></td></tr>
+<tr><th>【기능】</th><td><code>t</code>가 처음 나오는 위치(0부터). 없으면 −1</td></tr>
+<tr><th>【참고】</th><td><a href="#f-s.rfind">s.rfind</a> · <a href="#f-s.index">s.index</a></td></tr>
+</table></div>
+<div class="ent" id="f-s.rfind">
+<div class="eh"><span class="nm">s.rfind</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">s.rfind(t)</span></td></tr>
+<tr><th>【기능】</th><td>마지막으로 나오는 위치. 없으면 −1</td></tr>
+<tr><th>【참고】</th><td><a href="#f-s.find">s.find</a> · <a href="#f-s.index">s.index</a> · <a href="#f-s.count">s.count</a></td></tr>
+</table></div>
+<div class="ent" id="f-s.index">
+<div class="eh"><span class="nm">s.index</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">s.index(t)</span></td></tr>
+<tr><th>【기능】</th><td><code>find</code>와 같고, 없으면 <code>ValueError</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-s.find">s.find</a> · <a href="#f-s.rfind">s.rfind</a> · <a href="#f-s.count">s.count</a></td></tr>
+</table></div>
+<div class="ent" id="f-s.count">
+<div class="eh"><span class="nm">s.count</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">s.count(t)</span></td></tr>
+<tr><th>【기능】</th><td>겹치지 않게 센 횟수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-s.rfind">s.rfind</a> · <a href="#f-s.index">s.index</a></td></tr>
+</table></div>
+<h3>리스트와 사전 메서드</h3>
+<div class="ent" id="f-append">
+<div class="eh"><span class="nm">append · insert · extend</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">append(x)</span><br><span class="sig">insert(i, x)</span><br><span class="sig">extend(list)</span></td></tr>
+<tr><th>【기능】</th><td>항목을 더합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-pop">pop</a> · <a href="#f-index">index</a></td></tr>
+</table></div>
+<div class="ent" id="f-pop">
+<div class="eh"><span class="nm">pop · remove · clear</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">pop([i])</span><br><span class="sig">remove(x)</span><br><span class="sig">clear()</span></td></tr>
+<tr><th>【기능】</th><td>항목을 뺍니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-append">append</a> · <a href="#f-index">index</a> · <a href="#f-reverse">reverse</a></td></tr>
+</table></div>
+<div class="ent" id="f-index">
+<div class="eh"><span class="nm">index · count</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">index(x)</span><br><span class="sig">count(x)</span></td></tr>
+<tr><th>【기능】</th><td>위치 찾기, 개수 세기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-append">append</a> · <a href="#f-pop">pop</a> · <a href="#f-reverse">reverse</a> · <a href="#f-d.get">d.get</a></td></tr>
+</table></div>
+<div class="ent" id="f-reverse">
+<div class="eh"><span class="nm">reverse</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">reverse()</span></td></tr>
+<tr><th>【기능】</th><td>순서를 뒤집습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-pop">pop</a> · <a href="#f-index">index</a> · <a href="#f-d.get">d.get</a> · <a href="#f-d.update">d.update</a></td></tr>
+</table></div>
+<div class="ent" id="f-d.get">
+<div class="eh"><span class="nm">d.get</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">d.get(k[, default])</span></td></tr>
+<tr><th>【기능】</th><td>사전에서 값을 꺼냅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-index">index</a> · <a href="#f-reverse">reverse</a> · <a href="#f-d.update">d.update</a></td></tr>
+</table></div>
+<div class="ent" id="f-d.update">
+<div class="eh"><span class="nm">d.update</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">d.update(other)</span></td></tr>
+<tr><th>【기능】</th><td>다른 사전을 합칩니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-reverse">reverse</a> · <a href="#f-d.get">d.get</a></td></tr>
+</table></div>
+<h3>파일 객체</h3>
+<p class="note"><code>fs.open()</code>이 돌려주는 객체입니다.</p>
+<div class="ent" id="f-f.read">
+<div class="eh"><span class="nm">f.read</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.read([n])</span></td></tr>
+<tr><th>【기능】</th><td>최대 <code>n</code>바이트를 읽습니다. 생략하면 끝까지 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.readline">f.readline</a> · <a href="#f-f.readlines">f.readlines</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.readline">
+<div class="eh"><span class="nm">f.readline</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.readline()</span></td></tr>
+<tr><th>【기능】</th><td>한 줄을 읽습니다. 끝이면 <code>&quot;&quot;</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.read">f.read</a> · <a href="#f-f.readlines">f.readlines</a> · <a href="#f-f.write">f.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.readlines">
+<div class="eh"><span class="nm">f.readlines</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.readlines()</span></td></tr>
+<tr><th>【기능】</th><td>모든 줄을 리스트로 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.read">f.read</a> · <a href="#f-f.readline">f.readline</a> · <a href="#f-f.write">f.write</a> · <a href="#f-f.writelines">f.writelines</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.write">
+<div class="eh"><span class="nm">f.write</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.write(s)</span></td></tr>
+<tr><th>【기능】</th><td>씁니다. 쓴 글자 수를 돌려줍니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.readline">f.readline</a> · <a href="#f-f.readlines">f.readlines</a> · <a href="#f-f.writelines">f.writelines</a> · <a href="#f-f.seek">f.seek</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.writelines">
+<div class="eh"><span class="nm">f.writelines</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.writelines(list)</span></td></tr>
+<tr><th>【기능】</th><td>문자열 리스트를 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.readlines">f.readlines</a> · <a href="#f-f.write">f.write</a> · <a href="#f-f.seek">f.seek</a> · <a href="#f-f.close">f.close</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.seek">
+<div class="eh"><span class="nm">f.seek · f.tell</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.seek(pos)</span><br><span class="sig">f.tell()</span></td></tr>
+<tr><th>【기능】</th><td>바이트 위치를 옮기기 / 알아내기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.write">f.write</a> · <a href="#f-f.writelines">f.writelines</a> · <a href="#f-f.close">f.close</a></td></tr>
+</table></div>
+<div class="ent" id="f-f.close">
+<div class="eh"><span class="nm">f.close</span><span class="kd">메서드</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">f.close()</span></td></tr>
+<tr><th>【기능】</th><td>닫습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-f.writelines">f.writelines</a> · <a href="#f-f.seek">f.seek</a></td></tr>
+</table></div>
+<p class="note"><code>for line in f:</code>로 줄 단위 반복을 할 수 있습니다. 텍스트 모드에서는 줄바꿈이 변환됩니다(읽을 때 CRLF가 LF로, 쓸 때 LF가 CRLF로). 동시에 열 수 있는 파일은 3개입니다.</p>
+<h2 id="c4"><span class="no">4</span>screen: 화면과 그리기</h2>
+<h3>모드와 텍스트</h3>
+<div class="ent" id="f-screen.mode">
+<div class="eh"><span class="nm">screen.mode</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.mode(n)</span></td></tr>
+<tr><th>【기능】</th><td>화면 모드를 바꿉니다. 0~8, 9(한글 화면). 모드 번호는 기종이 지원하는 범위입니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(2)
+screen.circle(128, 96, 60, 15)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.width">screen.width</a> · <a href="#f-screen.cls">screen.cls</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.width">
+<div class="eh"><span class="nm">screen.width</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.width(n)</span></td></tr>
+<tr><th>【기능】</th><td>텍스트 모드의 한 줄 글자 수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.mode">screen.mode</a> · <a href="#f-screen.cls">screen.cls</a> · <a href="#f-screen.color">screen.color</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.cls">
+<div class="eh"><span class="nm">screen.cls</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.cls()</span></td></tr>
+<tr><th>【기능】</th><td>화면을 지웁니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.cls()</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.mode">screen.mode</a> · <a href="#f-screen.width">screen.width</a> · <a href="#f-screen.color">screen.color</a> · <a href="#f-screen.key">screen.key</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.color">
+<div class="eh"><span class="nm">screen.color</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.color(fg=None, bg=None, border=None)</span></td></tr>
+<tr><th>【기능】</th><td>전경색, 배경색, 테두리색</td></tr>
+<tr><th>【보기】</th><td><pre>screen.color(15, 4, 4)
+screen.cls()</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.width">screen.width</a> · <a href="#f-screen.cls">screen.cls</a> · <a href="#f-screen.key">screen.key</a> · <a href="#f-screen.locate">screen.locate</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.key">
+<div class="eh"><span class="nm">screen.key</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.key(on)</span></td></tr>
+<tr><th>【기능】</th><td>펑션키 표시줄을 켜거나 끕니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.cls">screen.cls</a> · <a href="#f-screen.color">screen.color</a> · <a href="#f-screen.locate">screen.locate</a> · <a href="#f-screen.cursor">screen.cursor</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.locate">
+<div class="eh"><span class="nm">screen.locate</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.locate(x, y)</span></td></tr>
+<tr><th>【기능】</th><td>텍스트 커서 위치</td></tr>
+<tr><th>【보기】</th><td><pre>screen.locate(10, 5)
+print(&quot;HERE&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.color">screen.color</a> · <a href="#f-screen.key">screen.key</a> · <a href="#f-screen.cursor">screen.cursor</a> · <a href="#f-screen.write">screen.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.cursor">
+<div class="eh"><span class="nm">screen.cursor</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.cursor(on)</span></td></tr>
+<tr><th>【기능】</th><td>커서를 보이거나 숨깁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.key">screen.key</a> · <a href="#f-screen.locate">screen.locate</a> · <a href="#f-screen.write">screen.write</a> · <a href="#f-screen.scroll_lines">screen.scroll_lines</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.write">
+<div class="eh"><span class="nm">screen.write</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.write(s)</span></td></tr>
+<tr><th>【기능】</th><td>글자를 그대로 출력합니다. 제어 문자도 그대로 전달됩니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.locate">screen.locate</a> · <a href="#f-screen.cursor">screen.cursor</a> · <a href="#f-screen.scroll_lines">screen.scroll_lines</a> · <a href="#f-screen.text">screen.text</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.scroll_lines">
+<div class="eh"><span class="nm">screen.scroll_lines</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.scroll_lines()</span></td></tr>
+<tr><th>【기능】</th><td>현재 쓸 수 있는 줄 수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.cursor">screen.cursor</a> · <a href="#f-screen.write">screen.write</a> · <a href="#f-screen.text">screen.text</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.text">
+<div class="eh"><span class="nm">screen.text</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.text(x, y, s, c=None)</span></td></tr>
+<tr><th>【기능】</th><td>그래픽 화면의 (x, y)에 글자를 그립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.write">screen.write</a> · <a href="#f-screen.scroll_lines">screen.scroll_lines</a></td></tr>
+</table></div>
+<h3>점, 선, 도형</h3>
+<div class="ent" id="f-screen.pset">
+<div class="eh"><span class="nm">screen.pset</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.pset(x, y, c=None)</span></td></tr>
+<tr><th>【기능】</th><td>점을 찍습니다. 화면 밖 좌표는 아무것도 그리지 않습니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(5)
+for x in range(256):
+    screen.pset(x, 100, 15)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.preset">screen.preset</a> · <a href="#f-screen.point">screen.point</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.preset">
+<div class="eh"><span class="nm">screen.preset</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.preset(x, y)</span></td></tr>
+<tr><th>【기능】</th><td>배경색으로 점을 찍습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.pset">screen.pset</a> · <a href="#f-screen.point">screen.point</a> · <a href="#f-screen.line">screen.line</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.point">
+<div class="eh"><span class="nm">screen.point</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.point(x, y)</span></td></tr>
+<tr><th>【기능】</th><td>점의 색을 읽습니다. 화면 밖이면 −1</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.pset">screen.pset</a> · <a href="#f-screen.preset">screen.preset</a> · <a href="#f-screen.line">screen.line</a> · <a href="#f-screen.circle">screen.circle</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.line">
+<div class="eh"><span class="nm">screen.line</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.line(x1, y1, x2, y2, c=None, mode=&quot;&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>선을 그립니다. <code>mode</code>는 <code>&quot;&quot;</code>(선), <code>&quot;B&quot;</code>(상자), <code>&quot;BF&quot;</code>(채운 상자). 화면을 벗어나는 끝점은 화면 안쪽으로 당겨집니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(5)
+screen.line(10, 10, 200, 150, 8)
+screen.line(20, 20, 80, 60, 3, &quot;BF&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.preset">screen.preset</a> · <a href="#f-screen.point">screen.point</a> · <a href="#f-screen.circle">screen.circle</a> · <a href="#f-screen.paint">screen.paint</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.circle">
+<div class="eh"><span class="nm">screen.circle</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.circle(x, y, r, c=None, aspect=None)</span></td></tr>
+<tr><th>【기능】</th><td>원을 그립니다. 호(각도 지정)는 없습니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(5)
+for r in range(10, 90, 10):
+    screen.circle(128, 106, r, r // 10)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.point">screen.point</a> · <a href="#f-screen.line">screen.line</a> · <a href="#f-screen.paint">screen.paint</a> · <a href="#f-screen.draw">screen.draw</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.paint">
+<div class="eh"><span class="nm">screen.paint</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.paint(x, y, c=None, border=None)</span></td></tr>
+<tr><th>【기능】</th><td>경계색으로 둘러싸인 영역을 칠합니다. 시작점이 화면 밖이면 <code>ValueError</code></td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(5)
+screen.circle(128, 106, 50, 15)
+screen.paint(128, 106, 8, 15)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.line">screen.line</a> · <a href="#f-screen.circle">screen.circle</a> · <a href="#f-screen.draw">screen.draw</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.draw">
+<div class="eh"><span class="nm">screen.draw</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.draw(s)</span></td></tr>
+<tr><th>【기능】</th><td>BASIC의 <code>DRAW</code> 명령 문자열을 실행합니다</td></tr>
+<tr><th>【보기】</th><td><pre>screen.mode(5)
+screen.draw(&quot;BM100,100 C15 R40 D40 L40 U40&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.circle">screen.circle</a> · <a href="#f-screen.paint">screen.paint</a></td></tr>
+</table></div>
+<p class="note">텍스트 전용 모드에서 그리기 함수를 부르면 <code>ValueError</code>가 발생합니다. 색이 범위를 벗어나도 <code>ValueError</code>입니다. 점, 선, 원, 칠하기는 마지막 좌표를 그래픽 커서로 기억하고, <code>screen.draw</code>가 그 위치에서 이어서 그립니다. <code>screen.point</code>는 커서를 옮기지 않습니다.</p>
+<p class="note"><code>screen.draw</code> 문자열에서 쓸 수 있는 명령은 다음과 같습니다. 빈칸과 세미콜론은 무시되고 소문자도 됩니다. <code>X</code> 명령은 없습니다.</p>
+<div class="tw"><table class="plain"><tr><th>명령</th><th>뜻</th></tr>
+<tr><td><code>U D L R E F G H</code> [n]</td><td>8방향으로 n칸 이동하며 그립니다</td></tr>
+<tr><td><code>M x,y</code></td><td>절대 좌표로 이동합니다. 첫 수에 부호가 있으면 상대 좌표입니다</td></tr>
+<tr><td><code>B</code> / <code>N</code></td><td>다음 이동을 그리지 않음 / 그린 뒤 제자리로 돌아옴</td></tr>
+<tr><td><code>C n</code></td><td>색</td></tr>
+<tr><td><code>S n</code></td><td>배율 (4가 등배). <code>A n</code> 각도 0~3 (90도 단위)</td></tr>
+</table></div>
+<h3>VRAM과 VDP</h3>
+<div class="ent" id="f-screen.vpeek">
+<div class="eh"><span class="nm">screen.vpeek · screen.vpoke</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vpeek(addr)</span><br><span class="sig">screen.vpoke(addr, v)</span></td></tr>
+<tr><th>【기능】</th><td>VRAM 1바이트 읽기/쓰기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vread">screen.vread</a> · <a href="#f-screen.vwrite">screen.vwrite</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vread">
+<div class="eh"><span class="nm">screen.vread</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vread(addr, n)</span></td></tr>
+<tr><th>【기능】</th><td>VRAM에서 <code>n</code>바이트를 <code>str</code>로 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vpeek">screen.vpeek</a> · <a href="#f-screen.vwrite">screen.vwrite</a> · <a href="#f-screen.vfill">screen.vfill</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vwrite">
+<div class="eh"><span class="nm">screen.vwrite</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vwrite(addr, data)</span></td></tr>
+<tr><th>【기능】</th><td><code>str</code>을 VRAM에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vpeek">screen.vpeek</a> · <a href="#f-screen.vread">screen.vread</a> · <a href="#f-screen.vfill">screen.vfill</a> · <a href="#f-screen.vcopy">screen.vcopy</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vfill">
+<div class="eh"><span class="nm">screen.vfill</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vfill(addr, n, v)</span></td></tr>
+<tr><th>【기능】</th><td>VRAM을 같은 값으로 채웁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vread">screen.vread</a> · <a href="#f-screen.vwrite">screen.vwrite</a> · <a href="#f-screen.vcopy">screen.vcopy</a> · <a href="#f-screen.vdp">screen.vdp</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vcopy">
+<div class="eh"><span class="nm">screen.vcopy</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vcopy(sx, sy, dx, dy, w, h, logop=None)</span></td></tr>
+<tr><th>【기능】</th><td>화면 안에서 사각형을 복사합니다. MSX2 이상</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vwrite">screen.vwrite</a> · <a href="#f-screen.vfill">screen.vfill</a> · <a href="#f-screen.vdp">screen.vdp</a> · <a href="#f-screen.vdpstat">screen.vdpstat</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vdp">
+<div class="eh"><span class="nm">screen.vdp</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vdp(reg, v)</span></td></tr>
+<tr><th>【기능】</th><td>VDP 레지스터에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vfill">screen.vfill</a> · <a href="#f-screen.vcopy">screen.vcopy</a> · <a href="#f-screen.vdpstat">screen.vdpstat</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.vdpstat">
+<div class="eh"><span class="nm">screen.vdpstat</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.vdpstat(n=0)</span></td></tr>
+<tr><th>【기능】</th><td>VDP 상태 레지스터를 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.vcopy">screen.vcopy</a> · <a href="#f-screen.vdp">screen.vdp</a></td></tr>
+</table></div>
+<p class="note">MSX1에서 VRAM 주소는 0~0x3FFF이며 그 위는 <code>ValueError</code>입니다.</p>
+<h3>MSX2 이상</h3>
+<div class="ent" id="f-screen.page">
+<div class="eh"><span class="nm">screen.page</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.page(display, active=None)</span></td></tr>
+<tr><th>【기능】</th><td>표시할 페이지와 그리는 페이지를 정합니다. SCREEN 5~8에서 쓰며, 둘 다 <code>None</code>이면 <code>ValueError</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.palette">screen.palette</a> · <a href="#f-screen.getpalette">screen.getpalette</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.palette">
+<div class="eh"><span class="nm">screen.palette</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.palette(n, r, g, b)</span></td></tr>
+<tr><th>【기능】</th><td>팔레트 <code>n</code>(0~15)을 정합니다. <code>r</code>, <code>g</code>, <code>b</code>는 0~7</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.page">screen.page</a> · <a href="#f-screen.getpalette">screen.getpalette</a> · <a href="#f-screen.resetpalette">screen.resetpalette</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.getpalette">
+<div class="eh"><span class="nm">screen.getpalette</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.getpalette(n)</span></td></tr>
+<tr><th>【기능】</th><td><code>[r, g, b]</code> 리스트를 돌려줍니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.page">screen.page</a> · <a href="#f-screen.palette">screen.palette</a> · <a href="#f-screen.resetpalette">screen.resetpalette</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.resetpalette">
+<div class="eh"><span class="nm">screen.resetpalette</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.resetpalette()</span></td></tr>
+<tr><th>【기능】</th><td>기본 팔레트로 되돌립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.palette">screen.palette</a> · <a href="#f-screen.getpalette">screen.getpalette</a></td></tr>
+</table></div>
+<h3>MSX2+ 이상</h3>
+<div class="ent" id="f-screen.yjk">
+<div class="eh"><span class="nm">screen.yjk</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.yjk(mode)</span></td></tr>
+<tr><th>【기능】</th><td>YJK 모드를 켜고 끕니다. <code>None</code>(끔), 10, 11, 12. 먼저 <code>screen.mode(8)</code>이어야 합니다</td></tr>
+</table></div>
+<h3>한글 (SCREEN 9)</h3>
+<div class="ent" id="f-screen.hangul">
+<div class="eh"><span class="nm">screen.hangul</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.hangul(on)</span></td></tr>
+<tr><th>【기능】</th><td>한글 입력을 켜고 끕니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.hangul_state">screen.hangul_state</a></td></tr>
+</table></div>
+<div class="ent" id="f-screen.hangul_state">
+<div class="eh"><span class="nm">screen.hangul_state</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.hangul_state()</span></td></tr>
+<tr><th>【기능】</th><td>조합 중인 음절의 부호. 없으면 0</td></tr>
+<tr><th>【참고】</th><td><a href="#f-screen.hangul">screen.hangul</a></td></tr>
+</table></div>
+<p class="note">SCREEN 9에는 VRAM 128KB가 필요합니다. 한글 글꼴이 없는 화면에서는 <code>NotImplementedError</code>가 발생합니다.</p>
+<h3>회전·확대 (turbo R)</h3>
+<div class="ent" id="f-screen.rotozoom">
+<div class="eh"><span class="nm">screen.rotozoom</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">screen.rotozoom(tex, x, y, w, h, u, v, du, dv, duy=-dv, dvy=du)</span></td></tr>
+<tr><th>【기능】</th><td>16x16 텍스처(256바이트 <code>str</code>)를 창 <code>(x, y, w, h)</code>에 회전·확대하여 채웁니다</td></tr>
+</table></div>
+<p class="note"><code>u</code>, <code>v</code>는 창의 첫 점이 가리키는 텍스처 위치, <code>du</code>, <code>dv</code>는 가로 한 점마다, <code>duy</code>, <code>dvy</code>는 세로 한 줄마다 움직이는 양입니다. 모두 8.8 고정소수점이고 텍스처는 반복됩니다. 인수를 13개 주면 <code>tex</code>는 512바이트(텍스처 2장)이고 뒤의 <code>u2, v2, du2, dv2</code>가 둘째 텍스처의 값이며, 두 텍셀의 합이 점의 색이 됩니다. SCREEN 5, 7, 8에서만 동작합니다. 이 이름이 들어 있는 실행 환경에서만 쓸 수 있습니다.</p>
+<h2 id="c5"><span class="no">5</span>sprite</h2>
+<div class="ent" id="f-sprite.size">
+<div class="eh"><span class="nm">sprite.size</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.size(pixels=8, magnify=False)</span></td></tr>
+<tr><th>【기능】</th><td>스프라이트 크기(8 또는 16)와 확대 여부</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.pattern">sprite.pattern</a> · <a href="#f-sprite.put">sprite.put</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.pattern">
+<div class="eh"><span class="nm">sprite.pattern</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.pattern(n, data)</span></td></tr>
+<tr><th>【기능】</th><td>패턴 <code>n</code>을 정합니다. <code>data</code>는 8바이트(8x8) 또는 32바이트(16x16)의 <code>str</code></td></tr>
+<tr><th>【보기】</th><td><pre>sprite.pattern(0, chr(24) + chr(60) + chr(126) + chr(255) + chr(255) + chr(126) + chr(60) + chr(24))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.size">sprite.size</a> · <a href="#f-sprite.put">sprite.put</a> · <a href="#f-sprite.hide">sprite.hide</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.put">
+<div class="eh"><span class="nm">sprite.put</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.put(n, x, y, color=None, pattern=None)</span></td></tr>
+<tr><th>【기능】</th><td>스프라이트 <code>n</code>(0~31)을 (x, y)에 표시합니다. y는 보이는 위치 그대로 씁니다</td></tr>
+<tr><th>【보기】</th><td><pre>sprite.put(0, 120, 90, 15, 0)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.size">sprite.size</a> · <a href="#f-sprite.pattern">sprite.pattern</a> · <a href="#f-sprite.hide">sprite.hide</a> · <a href="#f-sprite.clear">sprite.clear</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.hide">
+<div class="eh"><span class="nm">sprite.hide</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.hide(n)</span></td></tr>
+<tr><th>【기능】</th><td>화면 밖으로 치웁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.pattern">sprite.pattern</a> · <a href="#f-sprite.put">sprite.put</a> · <a href="#f-sprite.clear">sprite.clear</a> · <a href="#f-sprite.pos">sprite.pos</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.clear">
+<div class="eh"><span class="nm">sprite.clear</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.clear()</span></td></tr>
+<tr><th>【기능】</th><td>모든 스프라이트를 지웁니다. 패턴은 지우지 않습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.put">sprite.put</a> · <a href="#f-sprite.hide">sprite.hide</a> · <a href="#f-sprite.pos">sprite.pos</a> · <a href="#f-sprite.collision">sprite.collision</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.pos">
+<div class="eh"><span class="nm">sprite.pos</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.pos(n)</span></td></tr>
+<tr><th>【기능】</th><td><code>[x, y]</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.hide">sprite.hide</a> · <a href="#f-sprite.clear">sprite.clear</a> · <a href="#f-sprite.collision">sprite.collision</a> · <a href="#f-sprite.collision_at">sprite.collision_at</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.collision">
+<div class="eh"><span class="nm">sprite.collision</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.collision()</span></td></tr>
+<tr><th>【기능】</th><td>충돌 깃발이 서 있으면 <code>True</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.clear">sprite.clear</a> · <a href="#f-sprite.pos">sprite.pos</a> · <a href="#f-sprite.collision_at">sprite.collision_at</a> · <a href="#f-sprite.fifth">sprite.fifth</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.collision_at">
+<div class="eh"><span class="nm">sprite.collision_at</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.collision_at()</span></td></tr>
+<tr><th>【기능】</th><td>충돌 위치 <code>[x, y]</code>, 충돌이 없으면 <code>None</code>. MSX2 이상</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.pos">sprite.pos</a> · <a href="#f-sprite.collision">sprite.collision</a> · <a href="#f-sprite.fifth">sprite.fifth</a></td></tr>
+</table></div>
+<div class="ent" id="f-sprite.fifth">
+<div class="eh"><span class="nm">sprite.fifth</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sprite.fifth()</span></td></tr>
+<tr><th>【기능】</th><td>한 줄 제한을 넘긴 스프라이트 번호, 없으면 <code>None</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sprite.collision">sprite.collision</a> · <a href="#f-sprite.collision_at">sprite.collision_at</a></td></tr>
+</table></div>
+<p class="note"><code>sprite.size</code>는 인수를 생략하면 현재 값이 아니라 기본값(8, 확대 없음)이 됩니다. 번호가 범위를 벗어나면 <code>ValueError</code>입니다.</p>
+<h2 id="c6"><span class="no">6</span>sound</h2>
+<h3>PSG 레지스터</h3>
+<div class="ent" id="f-sound.init">
+<div class="eh"><span class="nm">sound.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.init()</span></td></tr>
+<tr><th>【기능】</th><td>PSG를 초기 상태로 되돌립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.psg">sound.psg</a> · <a href="#f-sound.psgread">sound.psgread</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.psg">
+<div class="eh"><span class="nm">sound.psg</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.psg(reg, v)</span></td></tr>
+<tr><th>【기능】</th><td>PSG 레지스터 <code>reg</code>(0~13)에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.init">sound.init</a> · <a href="#f-sound.psgread">sound.psgread</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.psgread">
+<div class="eh"><span class="nm">sound.psgread</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.psgread(reg)</span></td></tr>
+<tr><th>【기능】</th><td>PSG 레지스터를 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.init">sound.init</a> · <a href="#f-sound.psg">sound.psg</a></td></tr>
+</table></div>
+<h3>음 하나</h3>
+<div class="ent" id="f-sound.tone">
+<div class="eh"><span class="nm">sound.tone</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.tone(ch, period, volume=15)</span></td></tr>
+<tr><th>【기능】</th><td>채널 <code>ch</code>(0~2)에 주기 <code>period</code>(0~4095)로 소리를 냅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.note">sound.note</a> · <a href="#f-sound.volume">sound.volume</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.note">
+<div class="eh"><span class="nm">sound.note</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.note(ch, note, octave=4, volume=15)</span></td></tr>
+<tr><th>【기능】</th><td>음 이름(<code>&quot;C&quot;</code>, <code>&quot;C#&quot;</code>, … <code>&quot;B&quot;</code>) 또는 0~11로 소리를 냅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.tone">sound.tone</a> · <a href="#f-sound.volume">sound.volume</a> · <a href="#f-sound.noise">sound.noise</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.volume">
+<div class="eh"><span class="nm">sound.volume</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.volume(ch, v)</span></td></tr>
+<tr><th>【기능】</th><td>볼륨 0~15. 16이면 엔벨로프를 따릅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.tone">sound.tone</a> · <a href="#f-sound.note">sound.note</a> · <a href="#f-sound.noise">sound.noise</a> · <a href="#f-sound.envelope">sound.envelope</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.noise">
+<div class="eh"><span class="nm">sound.noise</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.noise(period, channels=0)</span></td></tr>
+<tr><th>【기능】</th><td>노이즈 주기(0~31)와 적용 채널(비트 0~2)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.note">sound.note</a> · <a href="#f-sound.volume">sound.volume</a> · <a href="#f-sound.envelope">sound.envelope</a> · <a href="#f-sound.mixer">sound.mixer</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.envelope">
+<div class="eh"><span class="nm">sound.envelope</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.envelope(period, shape)</span></td></tr>
+<tr><th>【기능】</th><td>엔벨로프 주기(0~65535)와 모양(0~15)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.volume">sound.volume</a> · <a href="#f-sound.noise">sound.noise</a> · <a href="#f-sound.mixer">sound.mixer</a> · <a href="#f-sound.off">sound.off</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.mixer">
+<div class="eh"><span class="nm">sound.mixer</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.mixer(tone=0b111, noise=0b000)</span></td></tr>
+<tr><th>【기능】</th><td>채널별 톤/노이즈 선택</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.noise">sound.noise</a> · <a href="#f-sound.envelope">sound.envelope</a> · <a href="#f-sound.off">sound.off</a> · <a href="#f-sound.beep">sound.beep</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.off">
+<div class="eh"><span class="nm">sound.off</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.off(ch=None)</span></td></tr>
+<tr><th>【기능】</th><td>한 채널 또는 전체를 끕니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.envelope">sound.envelope</a> · <a href="#f-sound.mixer">sound.mixer</a> · <a href="#f-sound.beep">sound.beep</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.beep">
+<div class="eh"><span class="nm">sound.beep</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.beep()</span></td></tr>
+<tr><th>【기능】</th><td>삐 소리</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.mixer">sound.mixer</a> · <a href="#f-sound.off">sound.off</a></td></tr>
+</table></div>
+<h3>MML 연주</h3>
+<div class="ent" id="f-sound.play">
+<div class="eh"><span class="nm">sound.play</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.play(mml, ch=0)</span></td></tr>
+<tr><th>【기능】</th><td>BASIC의 <code>PLAY</code>와 같은 MML 문자열을 연주합니다. 연주는 백그라운드로 진행됩니다</td></tr>
+<tr><th>【보기】</th><td><pre>sound.play(&quot;T120 O4 CDEFGAB O5 C&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.playing">sound.playing</a> · <a href="#f-sound.stop">sound.stop</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.playing">
+<div class="eh"><span class="nm">sound.playing</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.playing(ch=None)</span></td></tr>
+<tr><th>【기능】</th><td>연주 중이면 <code>True</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.play">sound.play</a> · <a href="#f-sound.stop">sound.stop</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.stop">
+<div class="eh"><span class="nm">sound.stop</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.stop(ch=None)</span></td></tr>
+<tr><th>【기능】</th><td>연주를 멈춥니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.play">sound.play</a> · <a href="#f-sound.playing">sound.playing</a></td></tr>
+</table></div>
+<p class="note">MML 명령은 <code>A</code>~<code>G</code>(<code>#</code>, <code>+</code>, <code>-</code>), <code>N</code>, <code>R</code>, <code>O</code>(1~8), <code>L</code>(1~64), <code>T</code>(32~255), <code>V</code>(0~15), <code>S</code>(0~15), <code>M</code>(1~65535), 점(<code>.</code>)입니다. 범위를 벗어나면 <code>ValueError</code>입니다. 변수를 참조하는 <code>X변수$;</code>와 <code>=변수;</code>는 없으며, 문자열을 <code>+</code>로 이어 만드십시오. 한 번의 호출은 한 목소리입니다.</p>
+<h3>FM 음원 (YM2413)</h3>
+<div class="ent" id="f-sound.has">
+<div class="eh"><span class="nm">sound.has</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.has(name)</span></td></tr>
+<tr><th>【기능】</th><td><code>&quot;psg&quot;</code>, <code>&quot;fm&quot;</code>, <code>&quot;audio&quot;</code> 중 해당 장치가 있는지. 다른 이름은 <code>ValueError</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.fm">sound.fm</a> · <a href="#f-sound.fm_note">sound.fm_note</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.fm">
+<div class="eh"><span class="nm">sound.fm</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.fm(reg, v)</span></td></tr>
+<tr><th>【기능】</th><td>YM2413 레지스터에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.has">sound.has</a> · <a href="#f-sound.fm_note">sound.fm_note</a></td></tr>
+</table></div>
+<div class="ent" id="f-sound.fm_note">
+<div class="eh"><span class="nm">sound.fm_note</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sound.fm_note(ch, note, octave=4, inst=1, volume=15)</span></td></tr>
+<tr><th>【기능】</th><td>FM 음 하나를 냅니다. <code>volume</code>은 15가 가장 큽니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sound.has">sound.has</a> · <a href="#f-sound.fm">sound.fm</a></td></tr>
+</table></div>
+<p class="note">장치가 없으면 <code>sound.fm</code>, <code>sound.fm_note</code>는 <code>NotImplementedError</code>입니다. 모든 세대에서 같게 동작합니다.</p>
+<h2 id="c7"><span class="no">7</span>key, joy, pad</h2>
+<h3>key</h3>
+<div class="ent" id="f-key.get">
+<div class="eh"><span class="nm">key.get</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.get()</span></td></tr>
+<tr><th>【기능】</th><td>키 하나를 기다려 글자로 돌려줍니다</td></tr>
+<tr><th>【보기】</th><td><pre>k = key.get()
+print(&quot;KEY&quot;, ord(k))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.inkey">key.inkey</a> · <a href="#f-key.line">key.line</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.inkey">
+<div class="eh"><span class="nm">key.inkey</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.inkey()</span></td></tr>
+<tr><th>【기능】</th><td>눌린 키가 있으면 글자, 없으면 <code>&quot;&quot;</code></td></tr>
+<tr><th>【보기】</th><td><pre>while key.inkey() == &quot;&quot;:
+    pass</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.get">key.get</a> · <a href="#f-key.line">key.line</a> · <a href="#f-key.wait">key.wait</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.line">
+<div class="eh"><span class="nm">key.line</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.line(prompt=&quot;&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>한 줄을 입력받습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.get">key.get</a> · <a href="#f-key.inkey">key.inkey</a> · <a href="#f-key.wait">key.wait</a> · <a href="#f-key.flush">key.flush</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.wait">
+<div class="eh"><span class="nm">key.wait</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.wait()</span></td></tr>
+<tr><th>【기능】</th><td>아무 키나 누를 때까지 기다립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.inkey">key.inkey</a> · <a href="#f-key.line">key.line</a> · <a href="#f-key.flush">key.flush</a> · <a href="#f-key.matrix">key.matrix</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.flush">
+<div class="eh"><span class="nm">key.flush</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.flush()</span></td></tr>
+<tr><th>【기능】</th><td>키 버퍼를 비웁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.line">key.line</a> · <a href="#f-key.wait">key.wait</a> · <a href="#f-key.matrix">key.matrix</a> · <a href="#f-key.pressed">key.pressed</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.matrix">
+<div class="eh"><span class="nm">key.matrix</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.matrix(row)</span></td></tr>
+<tr><th>【기능】</th><td>키보드 행(0~10)의 상태. 눌린 키는 0 비트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.wait">key.wait</a> · <a href="#f-key.flush">key.flush</a> · <a href="#f-key.pressed">key.pressed</a> · <a href="#f-key.caps">key.caps</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.pressed">
+<div class="eh"><span class="nm">key.pressed</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.pressed(name)</span></td></tr>
+<tr><th>【기능】</th><td><code>&quot;SPACE&quot;</code>, <code>&quot;ESC&quot;</code>, <code>&quot;F1&quot;</code> 같은 이름의 키가 눌려 있으면 <code>True</code></td></tr>
+<tr><th>【보기】</th><td><pre>while not key.pressed(&quot;SPACE&quot;):
+    pass</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.flush">key.flush</a> · <a href="#f-key.matrix">key.matrix</a> · <a href="#f-key.caps">key.caps</a> · <a href="#f-key.stop">key.stop</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.caps">
+<div class="eh"><span class="nm">key.caps</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.caps(on=None)</span></td></tr>
+<tr><th>【기능】</th><td>CAPS 램프 상태를 돌려주며, 인수를 주면 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.matrix">key.matrix</a> · <a href="#f-key.pressed">key.pressed</a> · <a href="#f-key.stop">key.stop</a></td></tr>
+</table></div>
+<div class="ent" id="f-key.stop">
+<div class="eh"><span class="nm">key.stop</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">key.stop(on=None)</span></td></tr>
+<tr><th>【기능】</th><td>Ctrl-STOP을 <code>KeyboardInterrupt</code>로 올릴지 정합니다. 기본값은 켜짐</td></tr>
+<tr><th>【참고】</th><td><a href="#f-key.pressed">key.pressed</a> · <a href="#f-key.caps">key.caps</a></td></tr>
+</table></div>
+<h3>joy</h3>
+<div class="ent" id="f-joy.stick">
+<div class="eh"><span class="nm">joy.stick</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">joy.stick(n=0)</span></td></tr>
+<tr><th>【기능】</th><td>방향. 0은 커서키, 1~2는 조이스틱 포트. 반환값은 0(중립)~8</td></tr>
+<tr><th>【보기】</th><td><pre>print(joy.stick(0))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-joy.trig">joy.trig</a> · <a href="#f-joy.dir">joy.dir</a></td></tr>
+</table></div>
+<div class="ent" id="f-joy.trig">
+<div class="eh"><span class="nm">joy.trig</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">joy.trig(n=0)</span></td></tr>
+<tr><th>【기능】</th><td>버튼. 0은 스페이스, 1~4는 조이스틱 버튼. <code>bool</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-joy.stick">joy.stick</a> · <a href="#f-joy.dir">joy.dir</a></td></tr>
+</table></div>
+<div class="ent" id="f-joy.dir">
+<div class="eh"><span class="nm">joy.dir</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">joy.dir(n=0)</span></td></tr>
+<tr><th>【기능】</th><td><code>[dx, dy]</code> 형태로 각각 −1, 0, 1</td></tr>
+<tr><th>【참고】</th><td><a href="#f-joy.stick">joy.stick</a> · <a href="#f-joy.trig">joy.trig</a></td></tr>
+</table></div>
+<h3>pad</h3>
+<div class="ent" id="f-pad.get">
+<div class="eh"><span class="nm">pad.get</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">pad.get(n)</span></td></tr>
+<tr><th>【기능】</th><td>터치패드 등의 값을 읽습니다 (0~7은 터치패드, 8 이상은 번호 그대로 전달)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-pad.paddle">pad.paddle</a> · <a href="#f-pad.mouse">pad.mouse</a></td></tr>
+</table></div>
+<div class="ent" id="f-pad.paddle">
+<div class="eh"><span class="nm">pad.paddle</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">pad.paddle(n)</span></td></tr>
+<tr><th>【기능】</th><td>패들 값 (n은 1~12)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-pad.get">pad.get</a> · <a href="#f-pad.mouse">pad.mouse</a></td></tr>
+</table></div>
+<div class="ent" id="f-pad.mouse">
+<div class="eh"><span class="nm">pad.mouse</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">pad.mouse(port=1)</span></td></tr>
+<tr><th>【기능】</th><td><code>[dx, dy, buttons]</code>. 마우스가 없어도 값이 돌아오므로 마우스가 연결된 경우에만 의미가 있습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-pad.get">pad.get</a> · <a href="#f-pad.paddle">pad.paddle</a></td></tr>
+</table></div>
+<h2 id="c8"><span class="no">8</span>mem: 메모리, I/O, BIOS</h2>
+<div class="ent" id="f-mem.peek">
+<div class="eh"><span class="nm">mem.peek · mem.poke</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.peek(addr)</span><br><span class="sig">mem.poke(addr, v)</span></td></tr>
+<tr><th>【기능】</th><td>1바이트 읽기/쓰기</td></tr>
+<tr><th>【보기】</th><td><pre>print(mem.peek(0xFC9E))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.peek16">mem.peek16</a> · <a href="#f-mem.read">mem.read</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.peek16">
+<div class="eh"><span class="nm">mem.peek16 · mem.poke16</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.peek16(addr)</span><br><span class="sig">mem.poke16(addr, v)</span></td></tr>
+<tr><th>【기능】</th><td>16비트 읽기/쓰기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.peek">mem.peek</a> · <a href="#f-mem.read">mem.read</a> · <a href="#f-mem.write">mem.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.read">
+<div class="eh"><span class="nm">mem.read</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.read(addr, n)</span></td></tr>
+<tr><th>【기능】</th><td><code>n</code>바이트를 <code>str</code>로 읽습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.peek">mem.peek</a> · <a href="#f-mem.peek16">mem.peek16</a> · <a href="#f-mem.write">mem.write</a> · <a href="#f-mem.copy">mem.copy</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.write">
+<div class="eh"><span class="nm">mem.write</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.write(addr, data)</span></td></tr>
+<tr><th>【기능】</th><td><code>str</code>을 메모리에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.peek16">mem.peek16</a> · <a href="#f-mem.read">mem.read</a> · <a href="#f-mem.copy">mem.copy</a> · <a href="#f-mem.inp">mem.inp</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.copy">
+<div class="eh"><span class="nm">mem.copy</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.copy(dst, src, n)</span></td></tr>
+<tr><th>【기능】</th><td>메모리 복사. 겹치는 구간은 앞에서부터 복사하므로 패턴 채우기에 쓸 수 있습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.read">mem.read</a> · <a href="#f-mem.write">mem.write</a> · <a href="#f-mem.inp">mem.inp</a> · <a href="#f-mem.bios">mem.bios</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.inp">
+<div class="eh"><span class="nm">mem.inp · mem.out</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.inp(port)</span><br><span class="sig">mem.out(port, v)</span></td></tr>
+<tr><th>【기능】</th><td>Z80 I/O 포트 읽기/쓰기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.write">mem.write</a> · <a href="#f-mem.copy">mem.copy</a> · <a href="#f-mem.bios">mem.bios</a> · <a href="#f-mem.subrom">mem.subrom</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.bios">
+<div class="eh"><span class="nm">mem.bios</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.bios(addr, a=0, b=0, c=0, d=0, e=0, h=0, l=0)</span></td></tr>
+<tr><th>【기능】</th><td>본체 BIOS 루틴을 부릅니다. 결과는 <code>{&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;h&quot;,&quot;l&quot;,&quot;f&quot;,&quot;cy&quot;}</code> 사전입니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.copy">mem.copy</a> · <a href="#f-mem.inp">mem.inp</a> · <a href="#f-mem.subrom">mem.subrom</a> · <a href="#f-mem.calslt">mem.calslt</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.subrom">
+<div class="eh"><span class="nm">mem.subrom</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.subrom(addr, ...)</span></td></tr>
+<tr><th>【기능】</th><td>같은 형식으로 SUB-ROM 루틴을 부릅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.inp">mem.inp</a> · <a href="#f-mem.bios">mem.bios</a> · <a href="#f-mem.calslt">mem.calslt</a> · <a href="#f-mem.usr">mem.usr</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.calslt">
+<div class="eh"><span class="nm">mem.calslt</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.calslt(slot, addr, ...)</span></td></tr>
+<tr><th>【기능】</th><td>지정한 슬롯의 루틴을 부릅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.bios">mem.bios</a> · <a href="#f-mem.subrom">mem.subrom</a> · <a href="#f-mem.usr">mem.usr</a> · <a href="#f-mem.slot">mem.slot</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.usr">
+<div class="eh"><span class="nm">mem.usr</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.usr(addr, arg=0)</span></td></tr>
+<tr><th>【기능】</th><td>기계어 루틴을 BASIC의 <code>USR</code>과 같은 규칙으로 부릅니다. 인수는 0~65535 정수 또는 255바이트 이하 <code>str</code>, 반환값은 부호 있는 정수 또는 <code>str</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.subrom">mem.subrom</a> · <a href="#f-mem.calslt">mem.calslt</a> · <a href="#f-mem.slot">mem.slot</a> · <a href="#f-mem.enaslt">mem.enaslt</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.slot">
+<div class="eh"><span class="nm">mem.slot</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.slot(page)</span></td></tr>
+<tr><th>【기능】</th><td>해당 페이지의 현재 슬롯</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.calslt">mem.calslt</a> · <a href="#f-mem.usr">mem.usr</a> · <a href="#f-mem.enaslt">mem.enaslt</a> · <a href="#f-mem.rdslt">mem.rdslt</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.enaslt">
+<div class="eh"><span class="nm">mem.enaslt</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.enaslt(slot, page)</span></td></tr>
+<tr><th>【기능】</th><td>페이지의 슬롯을 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.usr">mem.usr</a> · <a href="#f-mem.slot">mem.slot</a> · <a href="#f-mem.rdslt">mem.rdslt</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.rdslt">
+<div class="eh"><span class="nm">mem.rdslt · mem.wrslt</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.rdslt(slot, addr)</span><br><span class="sig">mem.wrslt(slot, addr, v)</span></td></tr>
+<tr><th>【기능】</th><td>지정 슬롯의 메모리 읽기/쓰기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.slot">mem.slot</a> · <a href="#f-mem.enaslt">mem.enaslt</a></td></tr>
+</table></div>
+<h3>매퍼 (MSX2 이상)</h3>
+<div class="ent" id="f-mem.segments">
+<div class="eh"><span class="nm">mem.segments</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.segments()</span></td></tr>
+<tr><th>【기능】</th><td>세그먼트 수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.segment">mem.segment</a> · <a href="#f-mem.alloc_segment">mem.alloc_segment</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.segment">
+<div class="eh"><span class="nm">mem.segment</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.segment(page, seg=None)</span></td></tr>
+<tr><th>【기능】</th><td>페이지에 연결된 세그먼트를 읽거나 바꿉니다. 페이지 3은 쓸 수 없습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.segments">mem.segments</a> · <a href="#f-mem.alloc_segment">mem.alloc_segment</a></td></tr>
+</table></div>
+<div class="ent" id="f-mem.alloc_segment">
+<div class="eh"><span class="nm">mem.alloc_segment · mem.free_segment</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">mem.alloc_segment()</span><br><span class="sig">mem.free_segment(n)</span></td></tr>
+<tr><th>【기능】</th><td>현재는 정의된 실패로 동작하며 사용할 수 없습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-mem.segments">mem.segments</a> · <a href="#f-mem.segment">mem.segment</a></td></tr>
+</table></div>
+<p class="note">MSX1에서는 <code>NotImplementedError</code>입니다. 시스템 변수는 이름 대신 주소로 접근합니다. 예: <code>mem.peek16(0xFC9E)</code>.</p>
+<h2 id="c9"><span class="no">9</span>fs: 디스크</h2>
+<p class="note">파일 이름은 DOS의 8.3 형식이며, 긴 이름은 <code>ValueError</code>입니다. 없는 파일은 <code>FileNotFoundError</code>입니다.</p>
+<div class="ent" id="f-fs.open">
+<div class="eh"><span class="nm">fs.open</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.open(name, mode=&quot;r&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>파일을 엽니다. 모드는 <code>&quot;r&quot;</code>, <code>&quot;w&quot;</code>, <code>&quot;a&quot;</code>, <code>&quot;rb&quot;</code>, <code>&quot;wb&quot;</code>, <code>&quot;ab&quot;</code>. 이진 모드도 <code>str</code>을 다룹니다</td></tr>
+<tr><th>【보기】</th><td><pre>f = fs.open(&quot;MEMO.TXT&quot;, &quot;w&quot;)
+f.write(&quot;HELLO\n&quot;)
+f.close()</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.exists">fs.exists</a> · <a href="#f-fs.files">fs.files</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.exists">
+<div class="eh"><span class="nm">fs.exists</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.exists(name)</span></td></tr>
+<tr><th>【기능】</th><td>파일이 있으면 <code>True</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.open">fs.open</a> · <a href="#f-fs.files">fs.files</a> · <a href="#f-fs.dir">fs.dir</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.files">
+<div class="eh"><span class="nm">fs.files</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.files(pattern=&quot;*.*&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>파일 이름 리스트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.open">fs.open</a> · <a href="#f-fs.exists">fs.exists</a> · <a href="#f-fs.dir">fs.dir</a> · <a href="#f-fs.kill">fs.kill</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.dir">
+<div class="eh"><span class="nm">fs.dir</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.dir(pattern=&quot;*.*&quot;)</span></td></tr>
+<tr><th>【기능】</th><td>파일 이름을 BASIC의 <code>FILES</code>처럼 한 줄에 셋씩 출력합니다. 이 이름이 들어 있는 실행 환경에서만 쓸 수 있습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.exists">fs.exists</a> · <a href="#f-fs.files">fs.files</a> · <a href="#f-fs.kill">fs.kill</a> · <a href="#f-fs.rename">fs.rename</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.kill">
+<div class="eh"><span class="nm">fs.kill</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.kill(name)</span></td></tr>
+<tr><th>【기능】</th><td>파일을 지웁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.files">fs.files</a> · <a href="#f-fs.dir">fs.dir</a> · <a href="#f-fs.rename">fs.rename</a> · <a href="#f-fs.size">fs.size</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.rename">
+<div class="eh"><span class="nm">fs.rename</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.rename(old, new)</span></td></tr>
+<tr><th>【기능】</th><td>이름을 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.dir">fs.dir</a> · <a href="#f-fs.kill">fs.kill</a> · <a href="#f-fs.size">fs.size</a> · <a href="#f-fs.drive">fs.drive</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.size">
+<div class="eh"><span class="nm">fs.size</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.size(name)</span></td></tr>
+<tr><th>【기능】</th><td>파일 크기(바이트)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.kill">fs.kill</a> · <a href="#f-fs.rename">fs.rename</a> · <a href="#f-fs.drive">fs.drive</a> · <a href="#f-fs.free">fs.free</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.drive">
+<div class="eh"><span class="nm">fs.drive</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.drive(n=None)</span></td></tr>
+<tr><th>【기능】</th><td>현재 드라이브를 알려주며, 인수를 주면 바꿉니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.rename">fs.rename</a> · <a href="#f-fs.size">fs.size</a> · <a href="#f-fs.free">fs.free</a> · <a href="#f-fs.load">fs.load</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.free">
+<div class="eh"><span class="nm">fs.free</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.free()</span></td></tr>
+<tr><th>【기능】</th><td>남은 용량(바이트)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.size">fs.size</a> · <a href="#f-fs.drive">fs.drive</a> · <a href="#f-fs.load">fs.load</a> · <a href="#f-fs.save">fs.save</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.load">
+<div class="eh"><span class="nm">fs.load</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.load(name)</span></td></tr>
+<tr><th>【기능】</th><td><code>.PY</code> 파일을 읽어 실행합니다</td></tr>
+<tr><th>【보기】</th><td><pre>fs.load(&quot;XMAZE.PY&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.drive">fs.drive</a> · <a href="#f-fs.free">fs.free</a> · <a href="#f-fs.save">fs.save</a></td></tr>
+</table></div>
+<div class="ent" id="f-fs.save">
+<div class="eh"><span class="nm">fs.save</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fs.save(name)</span></td></tr>
+<tr><th>【기능】</th><td>현재 프로그램 텍스트를 파일로 저장합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fs.free">fs.free</a> · <a href="#f-fs.load">fs.load</a></td></tr>
+</table></div>
+<h2 id="c10"><span class="no">10</span>time</h2>
+<div class="ent" id="f-time.tick">
+<div class="eh"><span class="nm">time.tick</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.tick()</span></td></tr>
+<tr><th>【기능】</th><td>프레임 카운터(JIFFY). 초가 아니라 프레임입니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.hz">time.hz</a> · <a href="#f-time.sleep">time.sleep</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.hz">
+<div class="eh"><span class="nm">time.hz</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.hz()</span></td></tr>
+<tr><th>【기능】</th><td>화면 주파수 (60 또는 50)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.tick">time.tick</a> · <a href="#f-time.sleep">time.sleep</a> · <a href="#f-time.ms">time.ms</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.sleep">
+<div class="eh"><span class="nm">time.sleep</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.sleep(frames)</span></td></tr>
+<tr><th>【기능】</th><td>프레임 수만큼 기다립니다</td></tr>
+<tr><th>【보기】</th><td><pre>time.sleep(60)      # 1초 (60Hz)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.tick">time.tick</a> · <a href="#f-time.hz">time.hz</a> · <a href="#f-time.ms">time.ms</a> · <a href="#f-time.clock">time.clock</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.ms">
+<div class="eh"><span class="nm">time.ms</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.ms(n)</span></td></tr>
+<tr><th>【기능】</th><td><code>n</code>밀리초에 해당하는 프레임 수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.hz">time.hz</a> · <a href="#f-time.sleep">time.sleep</a> · <a href="#f-time.clock">time.clock</a> · <a href="#f-time.setclock">time.setclock</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.clock">
+<div class="eh"><span class="nm">time.clock</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.clock()</span></td></tr>
+<tr><th>【기능】</th><td><code>[년, 월, 일, 시, 분, 초]</code>. MSX2 이상. 연도는 1980~2079입니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.sleep">time.sleep</a> · <a href="#f-time.ms">time.ms</a> · <a href="#f-time.setclock">time.setclock</a> · <a href="#f-time.hook">time.hook</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.setclock">
+<div class="eh"><span class="nm">time.setclock</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.setclock(y, mo, d, h, mi, s)</span></td></tr>
+<tr><th>【기능】</th><td>시계를 맞춥니다. MSX2 이상</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.ms">time.ms</a> · <a href="#f-time.clock">time.clock</a> · <a href="#f-time.hook">time.hook</a> · <a href="#f-time.counter">time.counter</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.hook">
+<div class="eh"><span class="nm">time.hook</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.hook(fn)</span></td></tr>
+<tr><th>【기능】</th><td>인터럽트마다 부를 함수를 등록합니다. <code>None</code>이면 해제합니다. 지원하지 않는 환경에서는 <code>NotImplementedError</code>가 발생합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.clock">time.clock</a> · <a href="#f-time.setclock">time.setclock</a> · <a href="#f-time.counter">time.counter</a> · <a href="#f-time.counter_hz">time.counter_hz</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.counter">
+<div class="eh"><span class="nm">time.counter</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.counter()</span></td></tr>
+<tr><th>【기능】</th><td>16비트 자유 실행 계수기 값. turbo R 전용</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.setclock">time.setclock</a> · <a href="#f-time.hook">time.hook</a> · <a href="#f-time.counter_hz">time.counter_hz</a></td></tr>
+</table></div>
+<div class="ent" id="f-time.counter_hz">
+<div class="eh"><span class="nm">time.counter_hz</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">time.counter_hz()</span></td></tr>
+<tr><th>【기능】</th><td>그 계수기의 초당 증가 수(255682)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-time.hook">time.hook</a> · <a href="#f-time.counter">time.counter</a></td></tr>
+</table></div>
+<p class="note"><code>time.counter()</code>는 약 256밀리초마다 한 바퀴를 돌므로 그보다 짧은 시간의 차이를 재는 데 씁니다.</p>
+<h2 id="c11"><span class="no">11</span>turbo: turbo R 전용</h2>
+<p class="note">turbo R이 아닌 기계에서는 <code>NotImplementedError</code>가 발생합니다.</p>
+<div class="ent" id="f-turbo.cpu">
+<div class="eh"><span class="nm">turbo.cpu</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.cpu(mode, lamp=None)</span></td></tr>
+<tr><th>【기능】</th><td>CPU 모드. 0은 Z80, 1은 R800(ROM), 2는 R800(DRAM). <code>lamp</code>를 주면 램프 상태도 지정합니다. 범위 밖은 <code>ValueError</code></td></tr>
+<tr><th>【보기】</th><td><pre>turbo.cpu(2, True)    # R800</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.get">turbo.get</a> · <a href="#f-turbo.pcm_play">turbo.pcm_play</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.get">
+<div class="eh"><span class="nm">turbo.get</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.get()</span></td></tr>
+<tr><th>【기능】</th><td>현재 CPU 모드(0, 1, 2)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.cpu">turbo.cpu</a> · <a href="#f-turbo.pcm_play">turbo.pcm_play</a> · <a href="#f-turbo.pcm_rec">turbo.pcm_rec</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.pcm_play">
+<div class="eh"><span class="nm">turbo.pcm_play</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.pcm_play(data, rate)</span></td></tr>
+<tr><th>【기능】</th><td>PCM을 재생합니다. <code>data</code>는 <code>str</code>이고 <code>rate</code>는 0~3으로 속도는 15750/(rate+1) Hz입니다. 빈 문자열은 아무것도 하지 않습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.cpu">turbo.cpu</a> · <a href="#f-turbo.get">turbo.get</a> · <a href="#f-turbo.pcm_rec">turbo.pcm_rec</a> · <a href="#f-turbo.xform">turbo.xform</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.pcm_rec">
+<div class="eh"><span class="nm">turbo.pcm_rec</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.pcm_rec(n, rate)</span></td></tr>
+<tr><th>【기능】</th><td>녹음. 이 기계에는 오디오 입력이 없으므로 항상 <code>NotImplementedError</code>입니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.get">turbo.get</a> · <a href="#f-turbo.pcm_play">turbo.pcm_play</a> · <a href="#f-turbo.xform">turbo.xform</a> · <a href="#f-turbo.rayview">turbo.rayview</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.xform">
+<div class="eh"><span class="nm">turbo.xform</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.xform(xs, ys, zs, m, sx, sy, sz=None)</span></td></tr>
+<tr><th>【기능】</th><td>3D 꼭짓점 변환(회전·이동·투영)을 R800 속도로 합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.pcm_play">turbo.pcm_play</a> · <a href="#f-turbo.pcm_rec">turbo.pcm_rec</a> · <a href="#f-turbo.rayview">turbo.rayview</a> · <a href="#f-turbo.raycast">turbo.raycast</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.rayview">
+<div class="eh"><span class="nm">turbo.rayview</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.rayview(wx, wy, ncol, cw, wh, hs, ceil, floor)</span></td></tr>
+<tr><th>【기능】</th><td>1인칭 레이캐스터의 뷰를 만듭니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.pcm_rec">turbo.pcm_rec</a> · <a href="#f-turbo.xform">turbo.xform</a> · <a href="#f-turbo.raycast">turbo.raycast</a></td></tr>
+</table></div>
+<div class="ent" id="f-turbo.raycast">
+<div class="eh"><span class="nm">turbo.raycast</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">turbo.raycast(view, map, w, x, y, dx, dy, depth=None)</span></td></tr>
+<tr><th>【기능】</th><td>뷰에 한 프레임을 그립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-turbo.xform">turbo.xform</a> · <a href="#f-turbo.rayview">turbo.rayview</a></td></tr>
+</table></div>
+<p class="note">PCM 데이터는 런렝스 형식입니다. 0x80이 무음 표본이고, 0x00 다음 바이트가 무음 표본 수입니다.</p>
+<p class="note"><code>turbo.xform</code>은 <code>xs</code>, <code>ys</code>, <code>zs</code>(꼭짓점 좌표 리스트)를 변환해 결과를 <code>sx</code>, <code>sy</code>(<code>sz</code>)에 제자리로 씁니다. <code>m</code>은 15개 정수 리스트로 <code>tx m11 m12 m13 ty m21 m22 m23 tz m31 m32 m33 cx cy d</code> 순서이며, 행렬은 부호 있는 8.8 고정소수점이고 <code>d</code>가 0이면 원근 투영을 하지 않습니다. <code>sx</code>가 <code>xs</code>와 같은 리스트여도 됩니다.</p>
+<p class="note"><code>turbo.rayview</code>와 <code>turbo.raycast</code>는 SCREEN 5 또는 7에서 동작하는 레이캐스터입니다. <code>rayview</code>가 만든 뷰는 각 열이 지난번에 무엇을 그렸는지 기억하여 바뀐 부분만 다시 그리므로, 화면을 다시 그렸으면 뷰도 새로 만드십시오. <code>map</code>은 한 줄에 <code>w</code>칸인 <code>str</code>로, 칸의 아래 니블이 가로면의 색, 위 니블이 세로면의 색이며 0은 빈 칸입니다. <code>x</code>, <code>y</code>는 시점(8.8), <code>dx</code>, <code>dy</code>는 시선 방향입니다. <code>depth</code>에 리스트를 주면 열마다 거리가 채워집니다.</p>
+<p class="note"><code>turbo.xform</code>, <code>turbo.rayview</code>, <code>turbo.raycast</code>, <code>screen.rotozoom</code>은 이 이름이 들어 있는 실행 환경에서만 쓸 수 있습니다.</p>
+<h2 id="c12"><span class="no">12</span>sys</h2>
+<div class="ent" id="f-sys.msx">
+<div class="eh"><span class="nm">sys.msx</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.msx()</span></td></tr>
+<tr><th>【기능】</th><td>세대. 1은 MSX1, 2는 MSX2, 3은 MSX2+, 4는 turbo R</td></tr>
+<tr><th>【보기】</th><td><pre>if sys.msx() &gt;= 4:
+    print(&quot;turbo R&quot;)</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.vram">sys.vram</a> · <a href="#f-sys.ram">sys.ram</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.vram">
+<div class="eh"><span class="nm">sys.vram</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.vram()</span></td></tr>
+<tr><th>【기능】</th><td>VRAM 크기(KB)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.msx">sys.msx</a> · <a href="#f-sys.ram">sys.ram</a> · <a href="#f-sys.hz">sys.hz</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.ram">
+<div class="eh"><span class="nm">sys.ram</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.ram()</span></td></tr>
+<tr><th>【기능】</th><td>RAM 크기(KB)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.msx">sys.msx</a> · <a href="#f-sys.vram">sys.vram</a> · <a href="#f-sys.hz">sys.hz</a> · <a href="#f-sys.keyboard">sys.keyboard</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.hz">
+<div class="eh"><span class="nm">sys.hz</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.hz()</span></td></tr>
+<tr><th>【기능】</th><td><code>time.hz()</code>와 같습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.vram">sys.vram</a> · <a href="#f-sys.ram">sys.ram</a> · <a href="#f-sys.keyboard">sys.keyboard</a> · <a href="#f-sys.charset">sys.charset</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.keyboard">
+<div class="eh"><span class="nm">sys.keyboard</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.keyboard()</span></td></tr>
+<tr><th>【기능】</th><td>키보드 종류 이름(<code>&quot;jp&quot;</code>, <code>&quot;int&quot;</code>, <code>&quot;kr&quot;</code> 등)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.ram">sys.ram</a> · <a href="#f-sys.hz">sys.hz</a> · <a href="#f-sys.charset">sys.charset</a> · <a href="#f-sys.slots">sys.slots</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.charset">
+<div class="eh"><span class="nm">sys.charset</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.charset()</span></td></tr>
+<tr><th>【기능】</th><td>문자셋 이름</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.hz">sys.hz</a> · <a href="#f-sys.keyboard">sys.keyboard</a> · <a href="#f-sys.slots">sys.slots</a> · <a href="#f-sys.exit">sys.exit</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.slots">
+<div class="eh"><span class="nm">sys.slots</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.slots()</span></td></tr>
+<tr><th>【기능】</th><td>존재하는 슬롯 번호의 리스트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.keyboard">sys.keyboard</a> · <a href="#f-sys.charset">sys.charset</a> · <a href="#f-sys.exit">sys.exit</a> · <a href="#f-sys.reset">sys.reset</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.exit">
+<div class="eh"><span class="nm">sys.exit</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.exit(code=0)</span></td></tr>
+<tr><th>【기능】</th><td>DOS로 돌아갑니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.charset">sys.charset</a> · <a href="#f-sys.slots">sys.slots</a> · <a href="#f-sys.reset">sys.reset</a> · <a href="#f-sys.argv">sys.argv</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.reset">
+<div class="eh"><span class="nm">sys.reset</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.reset()</span></td></tr>
+<tr><th>【기능】</th><td>기계를 다시 시작합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.slots">sys.slots</a> · <a href="#f-sys.exit">sys.exit</a> · <a href="#f-sys.argv">sys.argv</a> · <a href="#f-sys.mem">sys.mem</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.argv">
+<div class="eh"><span class="nm">sys.argv</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.argv()</span></td></tr>
+<tr><th>【기능】</th><td>명령줄 낱말 리스트. 프로그램 이름은 들어 있지 않습니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.exit">sys.exit</a> · <a href="#f-sys.reset">sys.reset</a> · <a href="#f-sys.mem">sys.mem</a></td></tr>
+</table></div>
+<div class="ent" id="f-sys.mem">
+<div class="eh"><span class="nm">sys.mem</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sys.mem()</span></td></tr>
+<tr><th>【기능】</th><td><code>[남은 힙, 남은 스택]</code> (바이트)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sys.reset">sys.reset</a> · <a href="#f-sys.argv">sys.argv</a></td></tr>
+</table></div>
+<p class="note"><code>sys.vram()</code>, <code>sys.ram()</code>은 XBIOS가 아닌 환경에서 <code>NotImplementedError</code>일 수 있습니다. <code>sys.argv()</code>는 명령줄이 없는 환경에서 <code>NotImplementedError</code>입니다.</p>
+<h2 id="c13"><span class="no">13</span>random</h2>
+<div class="ent" id="f-random.random">
+<div class="eh"><span class="nm">random.random</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">random.random()</span></td></tr>
+<tr><th>【기능】</th><td>0.0 이상 1.0 미만의 실수</td></tr>
+<tr><th>【참고】</th><td><a href="#f-random.randint">random.randint</a> · <a href="#f-random.seed">random.seed</a></td></tr>
+</table></div>
+<div class="ent" id="f-random.randint">
+<div class="eh"><span class="nm">random.randint</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">random.randint(a, b)</span></td></tr>
+<tr><th>【기능】</th><td><code>a</code> 이상 <code>b</code> 이하의 정수 (양 끝 포함). <code>a &gt; b</code>이면 <code>ValueError</code></td></tr>
+<tr><th>【보기】</th><td><pre>print(random.randint(1, 6))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-random.random">random.random</a> · <a href="#f-random.seed">random.seed</a></td></tr>
+</table></div>
+<div class="ent" id="f-random.seed">
+<div class="eh"><span class="nm">random.seed</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">random.seed(n)</span></td></tr>
+<tr><th>【기능】</th><td>씨앗을 정합니다. 인수가 필요합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-random.random">random.random</a> · <a href="#f-random.randint">random.randint</a></td></tr>
+</table></div>
+<p class="note">난수 수열은 MSX BASIC 의 <code>RND</code> 와 같습니다. <code>seed(n)</code> 은 <code>n</code> 의 유효숫자만 쓰므로 <code>seed(1)</code> 과 <code>seed(1000)</code> 은 같은 수열을 냅니다. 같은 수열을 다시 얻으려면 같은 값으로 <code>seed(n)</code> 을 부르십시오.</p>
+<h2 id="c14"><span class="no">14</span>math</h2>
+<div class="ent" id="f-math.sqrt">
+<div class="eh"><span class="nm">math.sqrt</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.sqrt(x)</span></td></tr>
+<tr><th>【기능】</th><td>제곱근. 음수는 <code>ValueError</code></td></tr>
+<tr><th>【보기】</th><td><pre>print(math.sqrt(2))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.sin">math.sin</a> · <a href="#f-math.atan">math.atan</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.sin">
+<div class="eh"><span class="nm">math.sin · math.cos · math.tan</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.sin(x)</span><br><span class="sig">math.cos(x)</span><br><span class="sig">math.tan(x)</span></td></tr>
+<tr><th>【기능】</th><td>삼각함수 (라디안)</td></tr>
+<tr><th>【보기】</th><td><pre>print(math.sin(math.pi / 2))</pre></td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.sqrt">math.sqrt</a> · <a href="#f-math.atan">math.atan</a> · <a href="#f-math.log">math.log</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.atan">
+<div class="eh"><span class="nm">math.atan</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.atan(x)</span></td></tr>
+<tr><th>【기능】</th><td>아크탄젠트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.sqrt">math.sqrt</a> · <a href="#f-math.sin">math.sin</a> · <a href="#f-math.log">math.log</a> · <a href="#f-math.exp">math.exp</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.log">
+<div class="eh"><span class="nm">math.log</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.log(x)</span></td></tr>
+<tr><th>【기능】</th><td>자연로그. 0 이하는 <code>ValueError</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.sin">math.sin</a> · <a href="#f-math.atan">math.atan</a> · <a href="#f-math.exp">math.exp</a> · <a href="#f-math.floor">math.floor</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.exp">
+<div class="eh"><span class="nm">math.exp</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.exp(x)</span></td></tr>
+<tr><th>【기능】</th><td>지수함수. 너무 큰 값은 <code>OverflowError</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.atan">math.atan</a> · <a href="#f-math.log">math.log</a> · <a href="#f-math.floor">math.floor</a> · <a href="#f-math.fabs">math.fabs</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.floor">
+<div class="eh"><span class="nm">math.floor · math.ceil</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.floor(x)</span><br><span class="sig">math.ceil(x)</span></td></tr>
+<tr><th>【기능】</th><td>내림, 올림 (<code>int</code>)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.log">math.log</a> · <a href="#f-math.exp">math.exp</a> · <a href="#f-math.fabs">math.fabs</a> · <a href="#f-math.pi">math.pi</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.fabs">
+<div class="eh"><span class="nm">math.fabs</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.fabs(x)</span></td></tr>
+<tr><th>【기능】</th><td>실수 절댓값</td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.exp">math.exp</a> · <a href="#f-math.floor">math.floor</a> · <a href="#f-math.pi">math.pi</a></td></tr>
+</table></div>
+<div class="ent" id="f-math.pi">
+<div class="eh"><span class="nm">math.pi · math.e</span><span class="kd">상수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">math.pi</span><br><span class="sig">math.e</span></td></tr>
+<tr><th>【기능】</th><td>상수 (괄호 없이 씁니다)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-math.floor">math.floor</a> · <a href="#f-math.fabs">math.fabs</a></td></tr>
+</table></div>
+<p class="note"><code>**</code> 연산자는 실수 지수를 받습니다. 밑이 음수이면 <code>ValueError</code>입니다. 실수는 단정도이므로 인수가 아주 크면 삼각함수의 정밀도가 떨어집니다.</p>
+<h2 id="c15"><span class="no">15</span>확장 칩 모듈</h2>
+<p class="note"><code>v9</code>, <code>opl4</code>, <code>audio</code>, <code>scc</code>, <code>psg2</code>, <code>midi</code>, <code>hrtimer</code>, <code>sn</code>, <code>sfg</code>, <code>fac</code>은 XBIOS2 계열 BIOS에서 확장 칩을 다루는 모듈입니다. 칩이 확장 모듈을 지원하는 XPY에서만 쓸 수 있습니다. 칩이 없으면 <code>has()</code>가 <code>False</code>를 돌려주며, 없는 칩에 대한 호출은 <code>NotImplementedError</code>, 인수가 잘못되면 <code>ValueError</code>, 인수 개수가 틀리면 <code>TypeError</code>입니다. XBIOS2가 아닌 BIOS에서는 <code>has()</code>도 <code>NotImplementedError</code>입니다. 빈 <code>str</code> 데이터는 아무것도 하지 않습니다.</p>
+<h3>v9: V9990 (GFX9000)</h3>
+<div class="ent" id="f-v9.has">
+<div class="eh"><span class="nm">v9.has</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.has()</span></td></tr>
+<tr><th>【기능】</th><td>칩이 있으면 <code>True</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.mode">v9.mode</a> · <a href="#f-v9.write">v9.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.mode">
+<div class="eh"><span class="nm">v9.mode</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.mode(screen, depth)</span></td></tr>
+<tr><th>【기능】</th><td>화면 모드. <code>screen</code> 0=P1, 1=P2, 2=B1, 3=B3, 4=B7, 5=B0, 6=B2, 7=B4. <code>depth</code> 0~3 (2, 4, 8, 16비트)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.has">v9.has</a> · <a href="#f-v9.write">v9.write</a> · <a href="#f-v9.setreg">v9.setreg</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.write">
+<div class="eh"><span class="nm">v9.write · v9.read</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.write(addr, data)</span><br><span class="sig">v9.read(addr, n)</span></td></tr>
+<tr><th>【기능】</th><td>VRAM 쓰기/읽기 (<code>str</code>)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.has">v9.has</a> · <a href="#f-v9.mode">v9.mode</a> · <a href="#f-v9.setreg">v9.setreg</a> · <a href="#f-v9.palette">v9.palette</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.setreg">
+<div class="eh"><span class="nm">v9.setreg · v9.getreg</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.setreg(r, v)</span><br><span class="sig">v9.getreg(r)</span></td></tr>
+<tr><th>【기능】</th><td>레지스터 쓰기/읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.mode">v9.mode</a> · <a href="#f-v9.write">v9.write</a> · <a href="#f-v9.palette">v9.palette</a> · <a href="#f-v9.cmd">v9.cmd</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.palette">
+<div class="eh"><span class="nm">v9.palette</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.palette(first, n, data)</span></td></tr>
+<tr><th>【기능】</th><td>팔레트. 색마다 R, G, B(각 0~31) 3바이트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.write">v9.write</a> · <a href="#f-v9.setreg">v9.setreg</a> · <a href="#f-v9.cmd">v9.cmd</a> · <a href="#f-v9.fill">v9.fill</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.cmd">
+<div class="eh"><span class="nm">v9.cmd</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.cmd(block)</span></td></tr>
+<tr><th>【기능】</th><td>블리터 명령 블록(R#32~R#52의 21바이트)을 실행합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.setreg">v9.setreg</a> · <a href="#f-v9.palette">v9.palette</a> · <a href="#f-v9.fill">v9.fill</a> · <a href="#f-v9.copy">v9.copy</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.fill">
+<div class="eh"><span class="nm">v9.fill</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.fill(x, y, w, h, colour)</span></td></tr>
+<tr><th>【기능】</th><td>사각형 채우기. <code>colour</code>는 16비트 값이며 8비트 화면에서는 <code>c * 257</code></td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.palette">v9.palette</a> · <a href="#f-v9.cmd">v9.cmd</a> · <a href="#f-v9.copy">v9.copy</a> · <a href="#f-v9.put">v9.put</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.copy">
+<div class="eh"><span class="nm">v9.copy</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.copy(sx, sy, dx, dy, w, h)</span></td></tr>
+<tr><th>【기능】</th><td>사각형 복사</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.cmd">v9.cmd</a> · <a href="#f-v9.fill">v9.fill</a> · <a href="#f-v9.put">v9.put</a> · <a href="#f-v9.scroll">v9.scroll</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.put">
+<div class="eh"><span class="nm">v9.put · v9.get</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.put(x, y, w, h, data)</span><br><span class="sig">v9.get(x, y, w, h, n)</span></td></tr>
+<tr><th>【기능】</th><td>사각형에 바이트를 넣기/빼기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.fill">v9.fill</a> · <a href="#f-v9.copy">v9.copy</a> · <a href="#f-v9.scroll">v9.scroll</a> · <a href="#f-v9.sprite">v9.sprite</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.scroll">
+<div class="eh"><span class="nm">v9.scroll</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.scroll(layer, x, y)</span></td></tr>
+<tr><th>【기능】</th><td>스크롤</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.copy">v9.copy</a> · <a href="#f-v9.put">v9.put</a> · <a href="#f-v9.sprite">v9.sprite</a> · <a href="#f-v9.irq">v9.irq</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.sprite">
+<div class="eh"><span class="nm">v9.sprite</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.sprite(n, y, pattern, x, attr)</span></td></tr>
+<tr><th>【기능】</th><td>스프라이트 (비트맵 화면에서는 커서)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.put">v9.put</a> · <a href="#f-v9.scroll">v9.scroll</a> · <a href="#f-v9.irq">v9.irq</a> · <a href="#f-v9.name">v9.name</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.irq">
+<div class="eh"><span class="nm">v9.irq · v9.ack</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.irq(enable, line)</span><br><span class="sig">v9.ack()</span></td></tr>
+<tr><th>【기능】</th><td>인터럽트 설정/확인</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.scroll">v9.scroll</a> · <a href="#f-v9.sprite">v9.sprite</a> · <a href="#f-v9.name">v9.name</a> · <a href="#f-v9.pattern">v9.pattern</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.name">
+<div class="eh"><span class="nm">v9.name</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.name(layer, x, y, n)</span></td></tr>
+<tr><th>【기능】</th><td>패턴 화면의 이름표 칸에 패턴 <code>n</code>(0~8191)을 지정합니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.sprite">v9.sprite</a> · <a href="#f-v9.irq">v9.irq</a> · <a href="#f-v9.pattern">v9.pattern</a></td></tr>
+</table></div>
+<div class="ent" id="f-v9.pattern">
+<div class="eh"><span class="nm">v9.pattern</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">v9.pattern(layer, n, data)</span></td></tr>
+<tr><th>【기능】</th><td>패턴 <code>n</code>의 모양을 정합니다. <code>data</code>는 32바이트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-v9.irq">v9.irq</a> · <a href="#f-v9.name">v9.name</a></td></tr>
+</table></div>
+<h3>opl4: OPL4 (MoonSound)</h3>
+<div class="ent" id="f-opl4.has">
+<div class="eh"><span class="nm">opl4.has · opl4.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.has()</span><br><span class="sig">opl4.init()</span></td></tr>
+<tr><th>【기능】</th><td>칩 확인 / 초기화</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.fm">opl4.fm</a> · <a href="#f-opl4.wave">opl4.wave</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.fm">
+<div class="eh"><span class="nm">opl4.fm</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.fm(reg, value, bank)</span></td></tr>
+<tr><th>【기능】</th><td>FM 레지스터 쓰기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.has">opl4.has</a> · <a href="#f-opl4.wave">opl4.wave</a> · <a href="#f-opl4.tone">opl4.tone</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.wave">
+<div class="eh"><span class="nm">opl4.wave · opl4.getwave</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.wave(reg, value)</span><br><span class="sig">opl4.getwave(reg)</span></td></tr>
+<tr><th>【기능】</th><td>웨이브 레지스터 쓰기/읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.has">opl4.has</a> · <a href="#f-opl4.fm">opl4.fm</a> · <a href="#f-opl4.tone">opl4.tone</a> · <a href="#f-opl4.off">opl4.off</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.tone">
+<div class="eh"><span class="nm">opl4.tone</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.tone(ch, tone, fnum, octave, level, pan)</span></td></tr>
+<tr><th>【기능】</th><td>웨이브 음색을 울립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.fm">opl4.fm</a> · <a href="#f-opl4.wave">opl4.wave</a> · <a href="#f-opl4.off">opl4.off</a> · <a href="#f-opl4.write">opl4.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.off">
+<div class="eh"><span class="nm">opl4.off</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.off(ch)</span></td></tr>
+<tr><th>【기능】</th><td>키오프</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.wave">opl4.wave</a> · <a href="#f-opl4.tone">opl4.tone</a> · <a href="#f-opl4.write">opl4.write</a> · <a href="#f-opl4.header">opl4.header</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.write">
+<div class="eh"><span class="nm">opl4.write · opl4.read</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.write(addr, data)</span><br><span class="sig">opl4.read(addr, n)</span></td></tr>
+<tr><th>【기능】</th><td>웨이브 메모리 쓰기/읽기 (RAM은 <code>0x200000</code>부터)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.tone">opl4.tone</a> · <a href="#f-opl4.off">opl4.off</a> · <a href="#f-opl4.header">opl4.header</a></td></tr>
+</table></div>
+<div class="ent" id="f-opl4.header">
+<div class="eh"><span class="nm">opl4.header</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">opl4.header(k, data)</span></td></tr>
+<tr><th>【기능】</th><td>사용자 음색 384+<code>k</code>(<code>k</code>는 0~127)의 머리 12바이트를 웨이브 RAM에 씁니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-opl4.off">opl4.off</a> · <a href="#f-opl4.write">opl4.write</a></td></tr>
+</table></div>
+<h3>audio: Y8950</h3>
+<div class="ent" id="f-audio.has">
+<div class="eh"><span class="nm">audio.has · audio.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">audio.has()</span><br><span class="sig">audio.init()</span></td></tr>
+<tr><th>【기능】</th><td>칩 확인 / 초기화</td></tr>
+<tr><th>【참고】</th><td><a href="#f-audio.reg">audio.reg</a> · <a href="#f-audio.write">audio.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-audio.reg">
+<div class="eh"><span class="nm">audio.reg · audio.getreg</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">audio.reg(r, v)</span><br><span class="sig">audio.getreg(r)</span></td></tr>
+<tr><th>【기능】</th><td>레지스터 쓰기/읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-audio.has">audio.has</a> · <a href="#f-audio.write">audio.write</a> · <a href="#f-audio.play">audio.play</a></td></tr>
+</table></div>
+<div class="ent" id="f-audio.write">
+<div class="eh"><span class="nm">audio.write · audio.read</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">audio.write(addr, data)</span><br><span class="sig">audio.read(addr, n)</span></td></tr>
+<tr><th>【기능】</th><td>샘플 RAM 쓰기/읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-audio.has">audio.has</a> · <a href="#f-audio.reg">audio.reg</a> · <a href="#f-audio.play">audio.play</a></td></tr>
+</table></div>
+<div class="ent" id="f-audio.play">
+<div class="eh"><span class="nm">audio.play · audio.stop</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">audio.play(start, stop, rate, volume, repeat)</span><br><span class="sig">audio.stop()</span></td></tr>
+<tr><th>【기능】</th><td>ADPCM 샘플 재생/정지</td></tr>
+<tr><th>【참고】</th><td><a href="#f-audio.reg">audio.reg</a> · <a href="#f-audio.write">audio.write</a></td></tr>
+</table></div>
+<h3>scc: SCC / SCC+</h3>
+<div class="ent" id="f-scc.has">
+<div class="eh"><span class="nm">scc.has · scc.slot</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">scc.has()</span><br><span class="sig">scc.slot()</span></td></tr>
+<tr><th>【기능】</th><td>칩이 있는지 / 슬롯 번호 (없으면 <code>NotImplementedError</code>)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-scc.write">scc.write</a></td></tr>
+</table></div>
+<div class="ent" id="f-scc.write">
+<div class="eh"><span class="nm">scc.write · scc.read</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">scc.write(slot, addr, data)</span><br><span class="sig">scc.read(slot, addr, n)</span></td></tr>
+<tr><th>【기능】</th><td>주소는 <code>0x98xx</code>(SCC) 또는 <code>0xB8xx</code>(SCC+), 1~256바이트</td></tr>
+<tr><th>【참고】</th><td><a href="#f-scc.has">scc.has</a></td></tr>
+</table></div>
+<h3>psg2: 두 번째 PSG</h3>
+<div class="ent" id="f-psg2.has">
+<div class="eh"><span class="nm">psg2.has · psg2.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">psg2.has()</span><br><span class="sig">psg2.init()</span></td></tr>
+<tr><th>【기능】</th><td>칩 확인 / 초기화</td></tr>
+<tr><th>【참고】</th><td><a href="#f-psg2.reg">psg2.reg</a></td></tr>
+</table></div>
+<div class="ent" id="f-psg2.reg">
+<div class="eh"><span class="nm">psg2.reg · psg2.getreg</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">psg2.reg(r, v)</span><br><span class="sig">psg2.getreg(r)</span></td></tr>
+<tr><th>【기능】</th><td>레지스터 쓰기/읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-psg2.has">psg2.has</a></td></tr>
+</table></div>
+<h3>midi: MIDI 인터페이스</h3>
+<div class="ent" id="f-midi.has">
+<div class="eh"><span class="nm">midi.has · midi.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">midi.has()</span><br><span class="sig">midi.init()</span></td></tr>
+<tr><th>【기능】</th><td>인터페이스 확인 / 초기화 (31250 baud)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-midi.send">midi.send</a> · <a href="#f-midi.recv">midi.recv</a></td></tr>
+</table></div>
+<div class="ent" id="f-midi.send">
+<div class="eh"><span class="nm">midi.send</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">midi.send(b)</span></td></tr>
+<tr><th>【기능】</th><td>바이트 하나를 보냅니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-midi.has">midi.has</a> · <a href="#f-midi.recv">midi.recv</a> · <a href="#f-midi.status">midi.status</a></td></tr>
+</table></div>
+<div class="ent" id="f-midi.recv">
+<div class="eh"><span class="nm">midi.recv</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">midi.recv()</span></td></tr>
+<tr><th>【기능】</th><td>바이트 하나를 받습니다. 받을 것이 없으면 <code>ValueError</code>이므로 먼저 <code>midi.status() &amp; 2</code>를 확인하십시오</td></tr>
+<tr><th>【참고】</th><td><a href="#f-midi.has">midi.has</a> · <a href="#f-midi.send">midi.send</a> · <a href="#f-midi.status">midi.status</a></td></tr>
+</table></div>
+<div class="ent" id="f-midi.status">
+<div class="eh"><span class="nm">midi.status</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">midi.status()</span></td></tr>
+<tr><th>【기능】</th><td>상태</td></tr>
+<tr><th>【참고】</th><td><a href="#f-midi.send">midi.send</a> · <a href="#f-midi.recv">midi.recv</a></td></tr>
+</table></div>
+<h3>hrtimer: 고해상도 타이머</h3>
+<div class="ent" id="f-hrtimer.has">
+<div class="eh"><span class="nm">hrtimer.has</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">hrtimer.has()</span></td></tr>
+<tr><th>【기능】</th><td>타이머가 있는지</td></tr>
+<tr><th>【참고】</th><td><a href="#f-hrtimer.get">hrtimer.get</a> · <a href="#f-hrtimer.reset">hrtimer.reset</a></td></tr>
+</table></div>
+<div class="ent" id="f-hrtimer.get">
+<div class="eh"><span class="nm">hrtimer.get</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">hrtimer.get()</span></td></tr>
+<tr><th>【기능】</th><td>3,579,545Hz로 세는 31비트 계수 값. 약 10분에 한 바퀴 돕니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-hrtimer.has">hrtimer.has</a> · <a href="#f-hrtimer.reset">hrtimer.reset</a></td></tr>
+</table></div>
+<div class="ent" id="f-hrtimer.reset">
+<div class="eh"><span class="nm">hrtimer.reset</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">hrtimer.reset()</span></td></tr>
+<tr><th>【기능】</th><td>0으로 되돌립니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-hrtimer.has">hrtimer.has</a> · <a href="#f-hrtimer.get">hrtimer.get</a></td></tr>
+</table></div>
+<h3>sn: SN76489</h3>
+<div class="ent" id="f-sn.init">
+<div class="eh"><span class="nm">sn.init · sn.write</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sn.init()</span><br><span class="sig">sn.write(b)</span></td></tr>
+<tr><th>【기능】</th><td>초기화 / 바이트 쓰기. 칩을 찾을 수 없으므로 <code>has()</code>가 없고 오류도 나지 않습니다</td></tr>
+</table></div>
+<h3>sfg: 야마하 SFG (YM2151)</h3>
+<div class="ent" id="f-sfg.has">
+<div class="eh"><span class="nm">sfg.has · sfg.slot</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sfg.has()</span><br><span class="sig">sfg.slot()</span></td></tr>
+<tr><th>【기능】</th><td>카트리지 확인 / 슬롯 번호</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sfg.init">sfg.init</a> · <a href="#f-sfg.reg">sfg.reg</a></td></tr>
+</table></div>
+<div class="ent" id="f-sfg.init">
+<div class="eh"><span class="nm">sfg.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sfg.init(slot)</span></td></tr>
+<tr><th>【기능】</th><td>초기화</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sfg.has">sfg.has</a> · <a href="#f-sfg.reg">sfg.reg</a> · <a href="#f-sfg.send">sfg.send</a></td></tr>
+</table></div>
+<div class="ent" id="f-sfg.reg">
+<div class="eh"><span class="nm">sfg.reg · sfg.status</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sfg.reg(slot, r, v)</span><br><span class="sig">sfg.status(slot)</span></td></tr>
+<tr><th>【기능】</th><td>레지스터 쓰기 / 상태 읽기</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sfg.has">sfg.has</a> · <a href="#f-sfg.init">sfg.init</a> · <a href="#f-sfg.send">sfg.send</a></td></tr>
+</table></div>
+<div class="ent" id="f-sfg.send">
+<div class="eh"><span class="nm">sfg.send · sfg.recv</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">sfg.send(slot, b)</span><br><span class="sig">sfg.recv(slot)</span></td></tr>
+<tr><th>【기능】</th><td>카트리지의 MIDI 송수신 (<code>recv</code>는 <code>midi.recv</code>와 같습니다)</td></tr>
+<tr><th>【참고】</th><td><a href="#f-sfg.init">sfg.init</a> · <a href="#f-sfg.reg">sfg.reg</a></td></tr>
+</table></div>
+<h3>fac: FAC MIDI</h3>
+<div class="ent" id="f-fac.has">
+<div class="eh"><span class="nm">fac.has · fac.init</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fac.has()</span><br><span class="sig">fac.init()</span></td></tr>
+<tr><th>【기능】</th><td>인터페이스 확인 / 초기화</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fac.send">fac.send</a></td></tr>
+</table></div>
+<div class="ent" id="f-fac.send">
+<div class="eh"><span class="nm">fac.send · fac.recv · fac.status</span><span class="kd">함수</span></div>
+<table class="ef">
+<tr><th>【형식】</th><td><span class="sig">fac.send(b)</span><br><span class="sig">fac.recv()</span><br><span class="sig">fac.status()</span></td></tr>
+<tr><th>【기능】</th><td><code>midi</code>와 같은 형태입니다. 쉴 때 <code>status()</code>는 133입니다</td></tr>
+<tr><th>【참고】</th><td><a href="#f-fac.has">fac.has</a></td></tr>
+</table></div>
+<footer>XBIOS 1.0 · © 2026 GHOST · CC BY-NC-ND 4.0</footer>
+</div></body></html>

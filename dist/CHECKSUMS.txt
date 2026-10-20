@@ -1,0 +1,44 @@
+XBIOS 1.0 체크섬
+=========================
+
+빌드        : 2026-10-20
+화면 판번호 : SYSTEM ROM  1.0
+검사        : 검사 5693/5693 통과 · XPY 2898/2898
+
+  1.0 (2026-10-20)   첫 공개 판.
+                     MSX1 · MSX2 · MSX2+ · turbo R 시스템 ROM, XPY ROM, 디스크 ROM,
+                     openMSX · blueMSX 기계 구성, 예제 디스크.
+
+파일                 크기     SHA-256                                                            CRC-32    SUM16
+MSX1
+xbios_1.rom          32768    9c05fd78811d5f428411158bcec7a8c36c1dfb046c6efb3aab19cd3c7391c43f   486209FB  E03F
+xbios_lo_0000.bin    16384    88bae5c3d1f99ee4a20311509c7f0dd68ea0a26d8f56fd645b312939750590a8   A2414EEC  21CE
+xbios_hi_4000.bin    16384    9990802c41ff0a0db06770b74f1837d839329b16e58aa88a55e287a61f796ba0   0C515F37  BE71
+
+MSX2
+xbios_2.rom          32768    de04d817ae95f01341d8aa876676a4291abfc609c37c23313508baaa49dfd15c   90F1E90C  113D
+xbios_2_sub.rom      16384    19f1a13d78a5900773eb60f75e4df69eaa4b22b14741534efe0392a5e5f15064   2B03F559  5E25
+
+MSX2+
+xbios_2p.rom         32768    567a731f71d435e1fc43047980443d36ff915a53a551f6e04cb238e06d3d9e96   4B802FAB  0238
+xbios_2p_sub.rom     16384    39be92f5c7e829aff4c8b092f4d610169f5ce93287992bcc73a94e07309597c4   0CE772EE  3FE3
+
+turbo R
+xbios_tr.rom         32768    2cb732f552118e7049dd1a2f0591117f15612f5a8301ef00d9bbb90eac1bf838   F590A47D  D09C
+xbios_tr_sub.rom     16384    7b84ac9bc22219b1537698d91b102211b3016106119fcd365d4689006f972e2e   898D88C3  0A45
+
+XPY
+xpybank.rom          131072   8a710896559ce4218a561c37fea7ff9796eb801a63102f29794ee5eabac8d10d   32937ED0  806D
+
+XDISK
+xdisk.rom            16384    ccc3796629b0fb354f99d641275decfaa3a6a0d106f7c55e3002c2ca4cada786   1B71FCF9  AA32
+
+진단용 (diag/)
+xbios_beacon.rom     32768    f6ae2ab4811a7c684e18369d9408f0e0b3a9e1098367760c27bb5ebf5526c4d7   BEE93118  ACBB
+
+SUM16 은 전 바이트의 합의 하위 16비트(TL866 의 Checksum)입니다. CRC-32 는 zlib 방식입니다.
+xbios_lo_0000.bin · xbios_hi_4000.bin 은 xbios_1.rom 을 반으로 나눈 것입니다.
+xbios_1.rom 의 코드는 $30F1 까지이고 나머지는 $FF 입니다. 디스크 드라이브가 내장된
+기종은 hi 쪽도 기록해야 합니다($7D2F 에 2바이트가 있습니다).
+
+칩 대조: powershell -File verify.ps1 <읽어낸파일>
